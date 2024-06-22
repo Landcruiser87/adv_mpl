@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-import sklearn
+import matplotlib.pyplot as plt
 
 
 #%%[markdown]
@@ -54,9 +54,44 @@ import sklearn
 ## Anatomy
 #
 # Now within those Axes, there's certain properties of the chart that we also
-# have access too.  Usually rooted in whatever axes the object resides, there's always a 
+# have access too.  Usually rooted in whatever `Axes` the object resides, there's always a 
 # method to either access the current values.  Or set them. For an excellent anatomy of a plot. 
 # please refer to the image below. 
 
 # ![Anatomy](https://realpython.com/cdn-cgi/image/width=500,format=auto/https://files.realpython.com/media/anatomy.7d033ebbfbc8.png)
+#
+# As illustrated in the plot, you can see various objects that are layered 
+# on top and tied to each axes object.  For example. 
+# 1. `Y axis Label` + `Y Major tick label`, `Y minor tick`, `Y Major tick`, are all connected to the `Y-Axis` object
+# 2. The `Line plot`, `Markers`, and `Legend` are all tied to the main `Axes` object. 
+#
+# Each of these pairings exist in different levels of the chart, and the methods you have access to depend on where you are in that reference heirarchy. Which brings me to our next subject.
+#%%[markdown]
 
+## Figure Reference 
+#
+#### lazy reference vs object oriented. 
+#
+# In matplotlib, you have two ways to build up plots.  One, you can use the `matplotlib.pyplot` or `plt` to reference the `current chart` or `Axes` object.  
+# Initially, this is how all learn to plot with matplotlib but leads to confusion down the road when you want to build more advanced visualizations.  
+# These calls looks like. 
+
+#%%
+fig, ax = plt.subplots(ncols=1, nrows=1, figsize=(10, 8))
+rand_arr = np.random.randint(low=5, high=10, size=(10,2)) + np.random.random((10,2))
+plt.plot(rand_arr[:, 0], label="random 1")
+plt.plot(rand_arr[:, 1], label="random 2")
+plt.legend()
+plt.title("LOOK AT THIS GRAPH", fontsize=22)
+plt.xlabel("Sometimes it really makes me laugh", fontsize=16)
+plt.show()
+
+#%%[markdown]
+#  
+# As you can see, that style of graphing is easy enough.  You can quickly build
+# up charts, but one thing you have to remember is that building charts with
+# `plt` as a reference is it `always references you to the last chart object you
+# created` you called to create. So while you have access to both the `fig` and
+# `ax` objects / variables from the `plt.subplots` return, by referencing `plt`
+# you are referencing the `last chart that you built` which is the look at this
+# graph chart. 
