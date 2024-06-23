@@ -7,8 +7,8 @@ import support
 
 #%%[markdown]
 #
-## Matplotlib!  (Part 1)
-
+## Matplotlib! (Lecture 1)
+#
 #### The only graphing library you'll ever need.
 #### By Andy Heroy (6/25/24)
 # 
@@ -24,10 +24,11 @@ import support
 #
 # As an overview, our talk tonight will be sectioned into 3 main parts. 
 #
-# 1. Plan
-# 2. Anatomy
-# 3. Graphs
-# 
+#### 1. Plan
+#### 2. Anatomy
+#### 3. Figure References
+#### 4. Graphs Graphs Graphs
+
 # So!!!  Lets dive right in and examine the mentality one might adopt when
 # building up a matplotlib chart.  First, an inspirational link for you all. You
 # will undoubtedly feel this way at some point in your career as a data
@@ -35,62 +36,74 @@ import support
 #
 # [**Look at this graph**](https://youtu.be/sz2mmM-kN1I?si=oy-Dl0wIc6fENHHa)
 #
-#
+#%%[markdown]
 ## 1. Plan
 #
 # - HAVE A PLAN. Or at least some idea of what you want to make.  My go to
 #    reference for chart inspiration is __Python Graph Gallery__ . An excellent
 #    resource with tons of really well made charts and supporting code.  Add it
-#    to your bookmarks as its one reference I use daily. What I really like
+#    to your bookmarks as its one reference and/or use daily. What I really like
 #    about this site is they go through the step by step thought process of how
 #    to create objects and manipulate them to do what you want.  It really has
 #    changed how I visualize graphs and ultimately made it so I don't need any
-#    additional libraries when making plots.  No *plotly*, *altair*, or any other
-#    crazy library.  `Just Matplotlib`.  Its that powerful.   
+#    additional libraries when making plots.  No *plotly*, *altair*, or any
+#    other crazy library.  `Just Matplotlib`.  Its that powerful.   
 #    
 #    (ok sometimes I use *seaborn* but not often!!)
 #
 # [**__Python Graph Gallery__**](https://python-graph-gallery.com/)
 #
-# - Use drawio or some other sketching tool to make an outline.  I use an
-#   VSCode extension by _Henning Dieterics_ called `Draw.io Integration`.  Its free and
-#   works wonderfuly for really complex flow chat layouts. Here is the ID for it in the 
-#   extensions marketplace. `hediet.vscode-drawio`
+# - Use drawio or some other sketching tool to make an outline.  I use a VSCode
+#   extension by _Henning Dieterics_ called `Draw.io Integration`.  Its free and
+#   works wonderfuly for really complex flow chart layouts. Here is the ID for
+#   it in the extensions marketplace. `hediet.vscode-drawio`
 # - Build each indvidual component (and its interactivity) piece by piece and
-#   layer them into one figure.  Just like *ggplot2*, *matplotlib* works in an object
-#   oriented format.  At the base of every object is usually an `Axes` object.
-#   Those act as containers for whatever thing you want to layer into it.  
+#   layer them into one figure.  Just like *ggplot2*, *matplotlib* works in an
+#   `object oriented format`.  At the base of every object is usually an `Axes`
+#   object. Those act as containers for whatever thing you want to layer into
+#   it.  Whether that be a radio button, a slider, an input text box.  You have
+#   to make a home for everything you want to put in your graphs.  That way you
+#   can build the cake up as high as your patience is willing to let you go. 
 # 
 #
-# So!  Lets start with the basic outline of a plot. 
-#
+# So!  Lets start with the basic outline of a matplotlib figure. 
 #
 # ![Objects](https://realpython.com/cdn-cgi/image/width=385,format=auto/https://files.realpython.com/media/fig_map.bc8c7cabd823.png)
 #
+# [RealPython - imagesource](https://realpython.com/cdn-cgi/image/width=385,format=auto/https://files.realpython.com/media/fig_map.bc8c7cabd823.png)
 #
-# As you can see, we've got the `figure` as the main container, with an `Axes`
-# object on top of that.  Then `two more Axis` objects on top of the `Axes`
-# object to make up our X and Y Axis.  You're beginning to see, but 
+# As you can see, we've got our `figure` as the main container, with an `Axes`
+# object on top of that that houses the chart data/title.  Then `two more Axis`
+# objects on top of the `Axes` chart object to make up our X and Y Axis.  You're
+# beginning to see, but 
 # 
-# **__everything in matplotlib is layered on top of each other in an *object oriented* fashion.__**
+# **__everything in matplotlib is layered on top of each other like this in an *object oriented* fashion.__**
 # 
-# Once you start thinking of the library in this way, everything else starts to make sense. 
-
+# Once you start thinking of the library in this way, everything starts to make sense. 
+#
 #%%[markdown]
 
 ## Anatomy
 #
-# Now within those Axes, there's certain properties of the chart that we also
-# have access too.  Usually rooted in whatever `Axes` the object resides, there's always a 
-# method to either access the current values.  Or set them. For an excellent anatomy of a plot. 
-# please refer to the image below. 
+# Now within those `Axis'`, there's certain properties of the chart that we also
+# have access too.  Usually rooted in wherever that `Axis` the object resides,
+# there's always a method to either access the current values. Or set them.
+# Remember to check the Axes method documentation for reference as it will
+# undoubtedly come in handy.
+# [Documentation](https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html)
+#
+# For an excellent anatomy visualization of a plot. please refer to the image below. 
 #
 # ![Anatomy](https://realpython.com/cdn-cgi/image/width=500,format=auto/https://files.realpython.com/media/anatomy.7d033ebbfbc8.png)
 #
-# As illustrated in the plot, you can see various objects that are layered 
-# on top and tied to each axes object.  For example. 
-# 1. `Y axis Label`, `Y Major tick label`, `Y Minor tick`, `Y Major tick`, are all connected to the `Y-Axis` object
-# 2. The `Line plot`, `Markers`, and `Legend` are all tied to the main `Axes` object. 
+# [RealPython - imagesource](https://realpython.com/cdn-cgi/image/width=500,format=auto/https://files.realpython.com/media/anatomy.7d033ebbfbc8.png)
+#
+# As illustrated in the plot, you can see various objects that are layered on
+# top and tied to each axis object.  For example. 
+# 1. `Y axis Label`, `Y Major tick label`, `Y Minor tick`, `Y Major tick`, are
+#    all connected to the `Y-Axis` object
+# 2. The `Line plot`, `Markers`, and `Legend` are all tied to the main `Axes`
+#    object. (ie - the main chart area object)
 #
 # Each of these pairings exist in different levels of the chart, and the methods you have access to depend on where you are in that reference heirarchy. Which brings me to our next subject.
 #%%[markdown]
@@ -126,10 +139,10 @@ plt.show()
 # ```you start layering items, you need a variable reference to them.```
 #
 # This is why `I highly suggest` you use `object oriented programming` to create
-# a proper reference to the item you wish to manipulate.  Ultimately this gives
-# you more control over each object, and lowers the computational requirement
-# when matplotlib doesn't have to call mutiple methods to find whatever the last
-# object you referenced was.  
+# a proper reference to the item you wish to manipulate.  Ultimately, this gives
+# you more control over each chart object, and lowers the computational
+# requirement when matplotlib doesn't have to call mutiple methods to find
+# whatever the last object you referenced was.  
 # 
 # 
 ### GRAPHS GRAPHS GRAPHS
@@ -141,8 +154,10 @@ plt.show()
 # What this does is creates a plot with the flexibility to create different
 # layouts depending on what you need to display. You'll wind up with two refences.  
 #
-# - `fig` -> which is the backbone of the plot and sits at the bottom of the stack.
-# - `ax` -> which sits on top of fig, but is tied to it.  Meaning commands will cascade down to their intended object if referenced correctly
+# - `fig` -> which is the backbone of the plot and sits at the bottom of the
+#   stack.
+# - `ax` -> which sits on top of fig, but is tied to it.  Meaning commands will
+#   cascade down to their intended object if referenced correctly
 #
 # Armed with that knowledge, we can now begin to assemble items in the manner we
 # want.  So for a starter graph, lets load up some UCI Heart Disease data and
@@ -153,13 +168,33 @@ plt.show()
 # 43008 uci heart
 opendb = support.grab_dataset(43008)
 
+#Select numeric columns
 numcols = opendb.data.select_dtypes("number").columns.tolist()
+
+#Grab the units from the description.Index a newline split from 13 to the 3rd
+#from the last.
+raw_units = opendb.data_description.split("\n")[13:-3]
+
+#Loop and extract units
+units = {}
+for idx, unit in enumerate(raw_units):
+    colname = unit.split(":")[0].strip("-").strip()
+    if " " in colname:
+        colname = "_".join(colname.split(" "))
+    if colname == "creatinine_phosphokinase_(CPK)":
+        colname = colname[:-6]
+    left = unit.index("(") + 1
+    right = unit.index(")")
+    units[colname] = raw_units[idx][left:right]
+
+units
 
 #Loop through and print individual plots 
 for col in numcols:
     fig, ax = plt.subplots(ncols = 1, nrows = 1)
     ax.hist(opendb.data[col])
-    ax.set_title(f"{col}")    
+    ax.set_title(f"{col}")
+    ax.set_xlabel(f"{units[col]}")
     plt.show()
 
 #Look at columns
