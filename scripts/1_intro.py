@@ -121,16 +121,14 @@ plt.show()
 # - `fig` -> which is the backbone of the plot and sits at the bottom of the stack.
 # - `ax` -> which sits on top of fig, but is tied to it.  Meaning commands will cascade down to their intended object if referenced correctly
 #
-# Armed with that knowledge, we can now begin to assemble items in the manner we want.  
-# So for a starter graph, #TODO 
+# Armed with that knowledge, we can now begin to assemble items in the manner we
+# want.  So for a starter graph, lets load up some UCI Heart Disease data and
+# take a first pass at a more advanced graph. 
 # 
+
 #%%
 # 43008 uci heart
 opendb = support.grab_dataset(43008)
-
-#Check columns
-opendb.data.columns.to_list()
-#number or object
 
 numcols = opendb.data.select_dtypes("number").columns.tolist()
 
@@ -141,16 +139,20 @@ for col in numcols:
     ax.set_title(f"{col}")    
     plt.show()
 
-support.sum_stats("number", "Number Stuff", opendb.data)
+#Look at columns
+opendb.data.columns.to_list()
+#number or object
+
+support.sum_stats("number", "Numeric Variable Summary", opendb.data)
 
 
 #%%[markdown]
 
 # Now , that's a nice way to loop individual columns to take a look at
-# histograms.  What if we tried to put it all on a grid? How would i reference
-# each axis then? Luckily, matplotlib has an intelligent way it maps out how
-# each axis is controlled.   There's a few different ways to do this and i'll
-# show you them all!
+# histograms.  What if we tried to put it all the same plot? How would i
+# reference each axis then? Luckily, matplotlib has an intelligent way it maps
+# out how each axis is controlled.   There's a few different ways utilize those
+# axes and i'll show you them all!
 #
 #### 1st way. Direct axis reference. 
 #
@@ -165,27 +167,65 @@ fig, (ax1, ax2, ax3) = plt.subplots(
     ncols=2, 
     figsize = (10, 8),
     height_ratios=[1, 3, 2],# Adjust the height ratios of the rows on the grid
+)
+plt.subplots_adjust(wspace=0.2, hspace = 0.7)
+idx, ax_count = 0, 1
+for ax in [ax1, ax2, ax3]:
+    ax[0].set_title(f"var:ax{ax_count}\nsubax:ax[{idx}]")
+    ax[1].set_title(f"var:ax{ax_count}\nsubax:ax[{idx+1}]")
+    
+    ax_count += 1
+plt.show()
+
+ #%%[markdown]
+#
+# Here you can see how each axis is referenced in the title of each plot. We
+# will run a for loop over each of the axis variables we created with
+# `plt.subplots`. Those will serve as the `rows` of the 3 row, 2 column chart.
+# Within each of those rows, there's a numpy array that houses two elements. The
+# first is the leftmost charts **_main axis_**. The second is the right most
+# charts **_main axis_** `for that row`
+# 
+# To give you a better picture of what I mean, Lets try plotting that UCI data.  
+# 
+#%%
+#make the fig
+fig, (ax1, ax2, ax3) = plt.subplots(
+    nrows=3, 
+    ncols=2, 
+    figsize = (10, 8),
+    height_ratios=[1, 3, 2],# Adjust the height ratios of the rows on the grid
     # layout = "constrained" #adjusts hspace and wspace automatically.  Done
     # below manually because constrained layout doesn't play well with the
     # ConnectionPatch according to their docs.  
 )
+#Adjust the spacing between with the subplots_adjust method
 plt.subplots_adjust(wspace=0.1, hspace = 0.7)
+#Counters for counting things
 idx, ax_count = 0, 0
 for ax in [ax1, ax2, ax3]:
     ax[0].hist(opendb.data[numcols[idx]], label=numcols[idx])
     ax[0].set_xlabel(numcols[idx])
-    ax[0].set_title(f"Ax[{idx}]")
-    ax[0].legend(loc="upper left")
+    ax[0].set_title(f"ax[0]")
+    ax[0].legend(loc="lower left")
     idx += 1
     ax[1].hist(opendb.data[numcols[idx]], label=numcols[idx])
     ax[1].set_xlabel(numcols[idx])
-    ax[1].set_title(f"Ax[{idx}]")
-    ax[1].legend(loc="lower left")
+    ax[1].set_title(f"ax[1]")
+    ax[1].legend(loc="upper left")
     idx += 1
-
+    #Next I want to draw an arrow from the middle of the left chart to to the middle of the 
+    #right chart.  Normally I could use matplotlibs Arrow or FancyArrow object for this, but
+    #matplotlib has a dedicated function for this called ConnectionPatch.  So we'll use that. 
+    #
     #Calculate the midpoint of each pair of side by side graphs.
-    # Do so by accessing the get_xlim, and get_ylim methods
-
+    # Do so by accessing the get_xlim, and get_ylim methods, and creating coordinates to the middle of each plot for the arrow to reference. 
+    # the coordsA and coordsB parameters for the ConnectionPatch object handle the transformation
+    # between the two ranges.
+    # Note:
+        # I only took the floor divisions for the first two variables because as
+        # luck would have it, the right most variables are all on a binary scale. So taking the floor
+        # divisino of 1 is zero  meaning the arrow didn't render properly
     x_midA = sum(list(ax[0].get_xlim())) // 2
     y_midA = sum(list(ax[0].get_ylim())) // 2
     x_midB = sum(list(ax[1].get_xlim())) / 2
@@ -208,7 +248,7 @@ for ax in [ax1, ax2, ax3]:
     fig.patches.append(special_arrow)
     #Little counter for the axis we're on
     ax_count += 1
-    #Maka da text annotation!
+    #Maka da text annotation!  ehhhhhh :pinched_fingers:
     ax[1].annotate(
         text = f"Ax{ax_count} variable",
         xy=(0.5, 0.7), 
@@ -219,7 +259,6 @@ for ax in [ax1, ax2, ax3]:
         fontweight="bold",
         annotation_clip=False
     )
-    
 
 plt.suptitle("Numerical Variable Exploration", size=20)
 plt.show()
@@ -227,6 +266,13 @@ plt.show()
 #%%[markdown]
 # For every row you create, that's the entire axis that it
 # spans across.  So if its a 3 x 2 grid.  if you're lookpi
+
+
+
+
+
+
+#%%[markdown]
 ####Eventual Heatmap finisher
 
     # cols = [ "avg_spo2", "sleep_score", "sleep_deep", "sleep_efficiency",
