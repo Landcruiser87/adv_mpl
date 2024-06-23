@@ -1,10 +1,12 @@
+#%%
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from matplotlib.patches import Arrow, FancyArrow
+from matplotlib.patches import ConnectionPatch
 import support
 
 #%%[markdown]
+#
 ## Matplotlib!  (Part 1)
 
 #### The only graphing library you'll ever need.
@@ -162,34 +164,64 @@ fig, (ax1, ax2, ax3) = plt.subplots(
     nrows=3, 
     ncols=2, 
     figsize = (10, 8),
-    height_ratios=[1, 3, 1],# Adjust the height ratios of the rows on the grid
-    layout = "constrained" #adjusts the plot so labels are able to be seen
+    height_ratios=[1, 3, 2],# Adjust the height ratios of the rows on the grid
+    # layout = "constrained" #adjusts hspace and wspace automatically.  Done
+    # below manually because constrained layout doesn't play well with the
+    # ConnectionPatch according to their docs.  
 )
-idx = 0
+plt.subplots_adjust(wspace=0.1, hspace = 0.7)
+idx, ax_count = 0, 0
 for ax in [ax1, ax2, ax3]:
     ax[0].hist(opendb.data[numcols[idx]], label=numcols[idx])
     ax[0].set_xlabel(numcols[idx])
-    ax[0].set_title(f"Ax ref {idx}")
-    ax[0].legend()
+    ax[0].set_title(f"Ax[{idx}]")
+    ax[0].legend(loc="upper left")
     idx += 1
     ax[1].hist(opendb.data[numcols[idx]], label=numcols[idx])
     ax[1].set_xlabel(numcols[idx])
-    ax[1].set_title(f"Ax ref {idx}")
-    ax[1].legend()
+    ax[1].set_title(f"Ax[{idx}]")
+    ax[1].legend(loc="lower left")
     idx += 1
-    #Set the arrow patch
-    ax_x_mid = sum(ax[0].get_xbound()) // 2
-    ax_y_mid = sum(ax[0].get_ybound()) // 2
-    arrow_patch = Arrow(
-        x=ax_x_mid,
-        y=ax_y_mid, 
-        dx=80,
-        dy=0,
-        width=3,
-        color="goldenrod"
 
+    #Calculate the midpoint of each pair of side by side graphs.
+    # Do so by accessing the get_xlim, and get_ylim methods
+
+    x_midA = sum(list(ax[0].get_xlim())) // 2
+    y_midA = sum(list(ax[0].get_ylim())) // 2
+    x_midB = sum(list(ax[1].get_xlim())) / 2
+    y_midB = sum(list(ax[1].get_ylim())) / 2
+    s_coordsA = (x_midA, y_midA)
+    s_coordsB = (x_midB, y_midB)
+
+    #Create the arrow patch
+    special_arrow = ConnectionPatch(
+        xyA=s_coordsA,
+        xyB=s_coordsB,
+        coordsA=ax[0].transData,
+        coordsB=ax[1].transData,
+        arrowstyle="-|>",
+        color="magenta",
+        mutation_scale=50,
+        linewidth=5,
     )
-    ax.add_patch(arrow_patch)
+    #apply it to the figure
+    fig.patches.append(special_arrow)
+    #Little counter for the axis we're on
+    ax_count += 1
+    #Maka da text annotation!
+    ax[1].annotate(
+        text = f"Ax{ax_count} variable",
+        xy=(0.5, 0.7), 
+        textcoords="axes fraction",
+        xytext=(0.65, 0.4),
+        color = "green",
+        ha='center',
+        fontweight="bold",
+        annotation_clip=False
+    )
+    
+
+plt.suptitle("Numerical Variable Exploration", size=20)
 plt.show()
 
 #%%[markdown]
