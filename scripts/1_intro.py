@@ -266,12 +266,12 @@ plt.subplots_adjust(wspace=0.1, hspace = 0.7)
 idx, ax_count = 0, 0
 for ax in [ax1, ax2, ax3]:
     ax[0].hist(opendb.data[numcols[idx]], label=numcols[idx])
-    ax[0].set_xlabel(numcols[idx])
+    ax[0].set_xlabel(f"{numcols[idx]} ({units[numcols[idx]]})")
     ax[0].set_title(f"ax[0]")
     ax[0].legend(loc="upper left")
     idx += 1
     ax[1].hist(opendb.data[numcols[idx]], label=numcols[idx])
-    ax[1].set_xlabel(numcols[idx])
+    ax[1].set_xlabel(f"{numcols[idx]} ({units[numcols[idx]]})")
     ax[1].set_title(f"ax[1]")
     ax[1].legend(loc="lower left")
     idx += 1
