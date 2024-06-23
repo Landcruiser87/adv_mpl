@@ -1,7 +1,8 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-
+from matplotlib.patches import Arrow, FancyArrow
+import support
 
 #%%[markdown]
 ## Matplotlib!  (Part 1)
@@ -22,7 +23,8 @@ import matplotlib.pyplot as plt
 #
 #
 # But~!  I digress, lets dive right in and examine the mentality one might adopt when 
-# building up a matplotlib chart.  
+# building up a matplotlib chart.  First, an inspirational link for you all. 
+# [Look at this graph](https://youtu.be/sz2mmM-kN1I?si=oy-Dl0wIc6fENHHa)
 
 ### Plan
 
@@ -57,12 +59,12 @@ import matplotlib.pyplot as plt
 # have access too.  Usually rooted in whatever `Axes` the object resides, there's always a 
 # method to either access the current values.  Or set them. For an excellent anatomy of a plot. 
 # please refer to the image below. 
-
+#
 # ![Anatomy](https://realpython.com/cdn-cgi/image/width=500,format=auto/https://files.realpython.com/media/anatomy.7d033ebbfbc8.png)
 #
 # As illustrated in the plot, you can see various objects that are layered 
 # on top and tied to each axes object.  For example. 
-# 1. `Y axis Label` + `Y Major tick label`, `Y minor tick`, `Y Major tick`, are all connected to the `Y-Axis` object
+# 1. `Y axis Label`, `Y Major tick label`, `Y Minor tick`, `Y Major tick`, are all connected to the `Y-Axis` object
 # 2. The `Line plot`, `Markers`, and `Legend` are all tied to the main `Axes` object. 
 #
 # Each of these pairings exist in different levels of the chart, and the methods you have access to depend on where you are in that reference heirarchy. Which brings me to our next subject.
@@ -78,10 +80,10 @@ import matplotlib.pyplot as plt
 
 #%%
 fig, ax = plt.subplots(ncols=1, nrows=1, figsize=(10, 8))
-rand_arr = np.random.randint(low=5, high=10, size=(10,2)) + np.random.random((10,2))
+rand_arr = np.random.randint(low=5, high=10, size=(10,2))
 plt.plot(rand_arr[:, 0], label="random 1")
 plt.plot(rand_arr[:, 1], label="random 2")
-plt.legend()
+plt.legend(loc="upper left")
 plt.title("LOOK AT THIS GRAPH", fontsize=22)
 plt.xlabel("Sometimes it really makes me laugh", fontsize=16)
 plt.show()
@@ -90,8 +92,140 @@ plt.show()
 #  
 # As you can see, that style of graphing is easy enough.  You can quickly build
 # up charts, but one thing you have to remember is that building charts with
-# `plt` as a reference is it `always references you to the last chart object you
-# created` you called to create. So while you have access to both the `fig` and
-# `ax` objects / variables from the `plt.subplots` return, by referencing `plt`
-# you are referencing the `last chart that you built` which is the look at this
-# graph chart. 
+# `plt` as a reference is it `always references/ties you to the last chart
+# object you created.` So while you have access to both the `fig` and `ax`
+# objects / variables from the `plt.subplots` return, by referencing `plt` you
+# are referencing the `last chart that you built` which is the look at this
+# graph chart. This is maintainable for small scale charts, but as soon as 
+# 
+# ```you start layering items, you need a variable reference to them.```
+#
+# This is why `I highly suggest` you use `object oriented programming` to create
+# a proper reference to the item you wish to manipulate.  Ultimately this gives
+# you more control over each object, and lowers the computational requirement
+# when matplotlib doesn't have to call mutiple methods to find whatever the last
+# object you referenced was.  
+# 
+# 
+#### NOW LETS GRAPH
+#
+# So for starters, lets begin with the suggested OO approach to creating a matplotlib chart. 
+#
+# `fig, ax = plt.subplots(ncols=1, nrows=1, figsize=(10, 8))`
+#
+# What this does is creates a plot with the flexibility to create different
+# layouts depending on what you need to display. You'll wind up with two refences.  
+#
+# - `fig` -> which is the backbone of the plot and sits at the bottom of the stack.
+# - `ax` -> which sits on top of fig, but is tied to it.  Meaning commands will cascade down to their intended object if referenced correctly
+#
+# Armed with that knowledge, we can now begin to assemble items in the manner we want.  
+# So for a starter graph, #TODO 
+# 
+#%%
+# 43008 uci heart
+opendb = support.grab_dataset(43008)
+
+#Check columns
+opendb.data.columns.to_list()
+#number or object
+
+numcols = opendb.data.select_dtypes("number").columns.tolist()
+
+#Loop through and print individual plots 
+for col in numcols:
+    fig, ax = plt.subplots(ncols = 1, nrows = 1)
+    ax.hist(opendb.data[col])
+    ax.set_title(f"{col}")    
+    plt.show()
+
+support.sum_stats("number", "Number Stuff", opendb.data)
+
+
+#%%[markdown]
+
+# Now , that's a nice way to loop individual columns to take a look at
+# histograms.  What if we tried to put it all on a grid? How would i reference
+# each axis then? Luckily, matplotlib has an intelligent way it maps out how
+# each axis is controlled.   There's a few different ways to do this and i'll
+# show you them all!
+#
+#### 1st way. Direct axis reference. 
+#
+# This is honestly the way I go most of the time when wanting to have a direct 
+# variable for the axes.  Say, we wanted to look at a 3 x 2 grid to assign 
+# values for plots.  You can either create multiple axis at the start of a plot
+# `fig, (ax1, ax2, ax3) = plt.subplots(ncols=3,ncols=2)`
+
+#%%
+fig, (ax1, ax2, ax3) = plt.subplots(
+    nrows=3, 
+    ncols=2, 
+    figsize = (10, 8),
+    height_ratios=[1, 3, 1],# Adjust the height ratios of the rows on the grid
+    layout = "constrained" #adjusts the plot so labels are able to be seen
+)
+idx = 0
+for ax in [ax1, ax2, ax3]:
+    ax[0].hist(opendb.data[numcols[idx]], label=numcols[idx])
+    ax[0].set_xlabel(numcols[idx])
+    ax[0].set_title(f"Ax ref {idx}")
+    ax[0].legend()
+    idx += 1
+    ax[1].hist(opendb.data[numcols[idx]], label=numcols[idx])
+    ax[1].set_xlabel(numcols[idx])
+    ax[1].set_title(f"Ax ref {idx}")
+    ax[1].legend()
+    idx += 1
+    #Set the arrow patch
+    ax_x_mid = sum(ax[0].get_xbound()) // 2
+    ax_y_mid = sum(ax[0].get_ybound()) // 2
+    arrow_patch = Arrow(
+        x=ax_x_mid,
+        y=ax_y_mid, 
+        dx=80,
+        dy=0,
+        width=3,
+        color="goldenrod"
+
+    )
+    ax.add_patch(arrow_patch)
+plt.show()
+
+#%%[markdown]
+# For every row you create, that's the entire axis that it
+# spans across.  So if its a 3 x 2 grid.  if you're lookpi
+####Eventual Heatmap finisher
+
+    # cols = [ "avg_spo2", "sleep_score", "sleep_deep", "sleep_efficiency",
+    #   "sleep_latency", "sleep_rem", "sleep_restfulness", "sleep_timing",
+    #   "sleep_total", "read_score", "read_tempdev", "read_tempdev_trend",
+    #   "read_act_bal", "read_body_temp", "read_hrv_bal", "read_prev_day_act",
+    #   "read_prev_night", "read_recover_idx", "read_resting_hr",
+    #   "read_sleep_bal", "act_score", "act_active_cal", "act_avg_met_min",
+    #   "act_eq_walk_dist", "act_non_wear_time", "act_resting_time",
+    #   "act_sed_time", "act_sed_met_min", "act_steps", "act_target_calories",
+    #   "act_total_calories"]
+
+    # #Make correlation chart
+    # fig, ax = plt.subplots(figsize=(16, 12))
+    # mask = np.triu(np.ones_like(oura_dt['data'].corr(), dtype=bool))
+    # heatmap = sns.heatmap(
+    #     data = oura_dt['data'].corr(),
+    #     ax = ax,
+    #     mask=mask,
+    #     vmin=-1, 
+    #     vmax=1,
+    #     annot=True, 
+    #     annot_kws={
+    #         'fontsize':6,
+    #     },
+    #     xticklabels=cols,
+    #     yticklabels=cols,
+    #     fmt='.1f',
+    #     cmap='RdYlGn')
+
+    # heatmap.set_title('Correlation Heatmap', fontdict={'fontsize':40})
+    # plt.xticks(size=8, rotation=-90)
+    # plt.yticks(size=8,)
+    # plt.show()'
