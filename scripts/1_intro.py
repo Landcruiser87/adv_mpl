@@ -16,25 +16,33 @@ import support
 # Given its age and maturity.  Matplotlib has been around for quite some time
 # and provides over 70k lines of code supporting almost any graphing initiative
 # that you may have and / or want to explore.  Its incredibly dense
-# documentation, that is also somewhat outdated, is quite good once you
-# understand how they structure their information.  As a reference, 
-# many of the subjects / images from this talk come from this reference on
-# [RealPython](https://realpython.com/python-matplotlib-guide/). They make
-# excellent articles and are worth the subscription if you'd like to beef
-# up your python skills quickly. 
-#
+# documentation, that is also somewhat outdated, but is quite good once you
+# understand how they structure their information.  As a reference, many of the
+# subjects / images from this talk come from this reference on
+# [**_RealPython_**](https://realpython.com/python-matplotlib-guide/). They make
+# excellent articles and are worth the subscription if you'd like to beef up
+# your python skills quickly. 
 #
 # But~!  I digress, lets dive right in and examine the mentality one might adopt when 
 # building up a matplotlib chart.  First, an inspirational link for you all. 
-# [Look at this graph](https://youtu.be/sz2mmM-kN1I?si=oy-Dl0wIc6fENHHa)
+# [**Look at this graph**](https://youtu.be/sz2mmM-kN1I?si=oy-Dl0wIc6fENHHa)
 
 ### Plan
 
 # 1. HAVE A PLAN. Or at least some idea of what you want to make.  My go to
-#    reference for chart inspiration is [Python Graph
-#    Gallery](https://python-graph-gallery.com/).  An excellent resource with
-#    tons of really well made charts and supporting code.  Add it to your
-#    bookmarks as its one reference I use daily. 
+#    reference for chart inspiration is __Python Graph Gallery__ . An excellent
+#    resource with tons of really well made charts and supporting code.  Add it
+#    to your bookmarks as its one reference I use daily. What i really like
+#    about this site is they go through the step by step thought process of how
+#    to create objects and manipulate them to do what you want.  It really has
+#    changed how I visualize graphs and ultimately made it so I don't need any
+#    additional libraries when making plots.  No plotly, altair, or any other
+#    crazy library.  `Just Matplotlib`.  Its that powerful.   Everythign I make
+#    is in base matplotlib because the library is really big.  70k lines
+#    of code for graphs??? That's bananas. :banana:
+#
+# [**__Python Graph Gallery__**](https://python-graph-gallery.com/)
+#
 # 2. Use drawio or some other sketching tool to make an outline
 # 3. Build each indvidual component (and its interactivity) piece by piece and
 # layer them into one figure.  Just like ggplot, matplotlib works in an object
@@ -46,7 +54,7 @@ import support
 #
 #
 # ![Objects](https://realpython.com/cdn-cgi/image/width=385,format=auto/https://files.realpython.com/media/fig_map.bc8c7cabd823.png)
-
+#
 #
 # As you can see, we've got the `figure` as the main container, with 
 # an `Axes` object under that.  But then `two more Axes` objects beneath that
@@ -151,14 +159,15 @@ support.sum_stats("number", "Numeric Variable Summary", opendb.data)
 # Now , that's a nice way to loop individual columns to take a look at
 # histograms.  What if we tried to put it all the same plot? How would i
 # reference each axis then? Luckily, matplotlib has an intelligent way it maps
-# out how each axis is controlled.   There's a few different ways utilize those
-# axes and i'll show you them all!
+# out how each axis is controlled. There's a few different ways to reference them.
 #
-#### 1st way. Direct axis reference. 
+#### 1st way. Direct axis index reference. 
 #
 # This is honestly the way I go most of the time when wanting to have a direct 
 # variable for the axes.  Say, we wanted to look at a 3 x 2 grid to assign 
 # values for plots.  You can either create multiple axis at the start of a plot
+#
+#
 # `fig, (ax1, ax2, ax3) = plt.subplots(ncols=3,ncols=2)`
 
 #%%
@@ -173,23 +182,24 @@ idx, ax_count = 0, 1
 for ax in [ax1, ax2, ax3]:
     ax[0].set_title(f"var:ax{ax_count}\nsubax:ax[{idx}]")
     ax[1].set_title(f"var:ax{ax_count}\nsubax:ax[{idx+1}]")
-    
     ax_count += 1
+
 plt.show()
 
  #%%[markdown]
 #
-# Here you can see how each axis is referenced in the title of each plot. We
-# will run a for loop over each of the axis variables we created with
-# `plt.subplots`. Those will serve as the `rows` of the 3 row, 2 column chart.
-# Within each of those rows, there's a numpy array that houses two elements. The
-# first is the leftmost charts **_main axis_**. The second is the right most
-# charts **_main axis_** `for that row`
+# Here you can see how each axis is referenced in the title of each plot. We ran
+# a for loop over each of the axis variables we created with `plt.subplots`.
+# Those will serve as the `rows` of the 3 row, 2 column chart. Within each of
+# those rows, there's a numpy array that houses two elements. The first (ax[0]
+# in the code) is the leftmost charts **_main axis_**. The second (ax[1] in the
+# code) is the right most charts **_main axis_** `for that row`
 # 
-# To give you a better picture of what I mean, Lets try plotting that UCI data.  
+# To give you a better picture of what I mean, Lets throw in some UCI data to help visualize what i'm talking about.
+# 
 # 
 #%%
-#make the fig
+#make the fig and axes variables
 fig, (ax1, ax2, ax3) = plt.subplots(
     nrows=3, 
     ncols=2, 
@@ -198,6 +208,7 @@ fig, (ax1, ax2, ax3) = plt.subplots(
     # layout = "constrained" #adjusts hspace and wspace automatically.  Done
     # below manually because constrained layout doesn't play well with the
     # ConnectionPatch according to their docs.  
+    #https://matplotlib.org/stable/api/_as_gen/matplotlib.patches.ConnectionPatch.html#matplotlib.patches.ConnectionPatch
 )
 #Adjust the spacing between with the subplots_adjust method
 plt.subplots_adjust(wspace=0.1, hspace = 0.7)
@@ -207,12 +218,12 @@ for ax in [ax1, ax2, ax3]:
     ax[0].hist(opendb.data[numcols[idx]], label=numcols[idx])
     ax[0].set_xlabel(numcols[idx])
     ax[0].set_title(f"ax[0]")
-    ax[0].legend(loc="lower left")
+    ax[0].legend(loc="upper left")
     idx += 1
     ax[1].hist(opendb.data[numcols[idx]], label=numcols[idx])
     ax[1].set_xlabel(numcols[idx])
     ax[1].set_title(f"ax[1]")
-    ax[1].legend(loc="upper left")
+    ax[1].legend(loc="lower left")
     idx += 1
     #Next I want to draw an arrow from the middle of the left chart to to the middle of the 
     #right chart.  Normally I could use matplotlibs Arrow or FancyArrow object for this, but
@@ -264,11 +275,14 @@ plt.suptitle("Numerical Variable Exploration", size=20)
 plt.show()
 
 #%%[markdown]
-# For every row you create, that's the entire axis that it
-# spans across.  So if its a 3 x 2 grid.  if you're lookpi
-
-
-
+# Now we can begin to see how matplotlib layers its references one on top of the
+# other in that object oriented style fashion.  The refernece to the object that
+# you want to change is just a matter of referencing it correctly in the object
+# stack.  Much like scraping websites for html tags!
+#
+# Being that I would be its taken us a little bit to get to this point. We'll do one more 
+# quick graph before the fiddleheads is through.  Or maybe we flew to this point and we have
+# plenty of time.  I have no real concept of it in these presentations!  Lol.  I digress. 
 
 
 
