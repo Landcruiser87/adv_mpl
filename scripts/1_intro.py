@@ -20,34 +20,46 @@ import support
 # understand how they structure their information.  As a reference, many of the
 # subjects / images from this talk come from this reference on
 # [**_RealPython_**](https://realpython.com/python-matplotlib-guide/). They make
-# excellent articles and are worth the subscription if you'd like to beef up
-# your python skills quickly. 
+# excellent articles and guide material for programming in python.  
 #
-# But~!  I digress, lets dive right in and examine the mentality one might adopt when 
-# building up a matplotlib chart.  First, an inspirational link for you all. 
+# As an overview, our talk tonight will be sectioned into 3 main parts. 
+#
+# 1. Plan
+# 2. Anatomy
+# 3. Graphs
+# 
+# So!!!  Lets dive right in and examine the mentality one might adopt when
+# building up a matplotlib chart.  First, an inspirational link for you all. You
+# will undoubtedly feel this way at some point in your career as a data
+# scientist.  
+#
 # [**Look at this graph**](https://youtu.be/sz2mmM-kN1I?si=oy-Dl0wIc6fENHHa)
-
-### Plan
-
-# 1. HAVE A PLAN. Or at least some idea of what you want to make.  My go to
+#
+#
+## 1. Plan
+#
+# - HAVE A PLAN. Or at least some idea of what you want to make.  My go to
 #    reference for chart inspiration is __Python Graph Gallery__ . An excellent
 #    resource with tons of really well made charts and supporting code.  Add it
-#    to your bookmarks as its one reference I use daily. What i really like
+#    to your bookmarks as its one reference I use daily. What I really like
 #    about this site is they go through the step by step thought process of how
 #    to create objects and manipulate them to do what you want.  It really has
 #    changed how I visualize graphs and ultimately made it so I don't need any
-#    additional libraries when making plots.  No plotly, altair, or any other
-#    crazy library.  `Just Matplotlib`.  Its that powerful.   Everythign I make
-#    is in base matplotlib because the library is really big.  70k lines
-#    of code for graphs??? That's bananas. :banana:
+#    additional libraries when making plots.  No *plotly*, *altair*, or any other
+#    crazy library.  `Just Matplotlib`.  Its that powerful.   
+#    
+#    (ok sometimes I use *seaborn* but not often!!)
 #
 # [**__Python Graph Gallery__**](https://python-graph-gallery.com/)
 #
-# 2. Use drawio or some other sketching tool to make an outline
-# 3. Build each indvidual component (and its interactivity) piece by piece and
-# layer them into one figure.  Just like ggplot, matplotlib works in an object
-# oriented format.  At the base of every object is usually an `Axes` object.
-# Those act as containers for whatever thing you want to layer into it.  
+# - Use drawio or some other sketching tool to make an outline.  I use an
+#   VSCode extension by _Henning Dieterics_ called `Draw.io Integration`.  Its free and
+#   works wonderfuly for really complex flow chat layouts. Here is the ID for it in the 
+#   extensions marketplace. `hediet.vscode-drawio`
+# - Build each indvidual component (and its interactivity) piece by piece and
+#   layer them into one figure.  Just like *ggplot2*, *matplotlib* works in an object
+#   oriented format.  At the base of every object is usually an `Axes` object.
+#   Those act as containers for whatever thing you want to layer into it.  
 # 
 #
 # So!  Lets start with the basic outline of a plot. 
@@ -56,10 +68,13 @@ import support
 # ![Objects](https://realpython.com/cdn-cgi/image/width=385,format=auto/https://files.realpython.com/media/fig_map.bc8c7cabd823.png)
 #
 #
-# As you can see, we've got the `figure` as the main container, with 
-# an `Axes` object under that.  But then `two more Axes` objects beneath that
-# to make up our X and Y Axis.  Everything in matplotlib is layered this way,
-# in an `object oriented` fashion.
+# As you can see, we've got the `figure` as the main container, with an `Axes`
+# object on top of that.  Then `two more Axis` objects on top of the `Axes`
+# object to make up our X and Y Axis.  You're beginning to see, but 
+# 
+# **__everything in matplotlib is layered on top of each other in an *object oriented* fashion.__**
+# 
+# Once you start thinking of the library in this way, everything else starts to make sense. 
 
 #%%[markdown]
 
@@ -80,7 +95,7 @@ import support
 # Each of these pairings exist in different levels of the chart, and the methods you have access to depend on where you are in that reference heirarchy. Which brings me to our next subject.
 #%%[markdown]
 
-## Figure Reference 
+### Figure Reference 
 #
 #### lazy reference vs object oriented. 
 #
@@ -117,7 +132,7 @@ plt.show()
 # object you referenced was.  
 # 
 # 
-#### NOW LETS GRAPH
+### GRAPHS GRAPHS GRAPHS
 #
 # So for starters, lets begin with the suggested OO approach to creating a matplotlib chart. 
 #
