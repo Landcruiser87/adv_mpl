@@ -160,7 +160,7 @@ plt.show()
 #
 # So for starters, lets begin with the suggested OO approach to creating a matplotlib chart. 
 #
-# `fig, ax = plt.subplots(ncols=1, nrows=1, figsize=(10, 8))`
+# `fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(10, 8))`
 #
 # What this does is creates a plot with the flexibility to create different
 # layouts depending on what you need to display. You'll wind up with two refences.  
@@ -227,14 +227,12 @@ for idx, unit in enumerate(raw_units):
     right = unit.index(")")
     units[colname] = raw_units[idx][left:right]
 
-units
-
 #Loop through and print individual plots 
 for col in numcols:
     fig, ax = plt.subplots(ncols = 1, nrows = 1)
     ax.hist(opendb.data[col])
-    ax.set_title(f"{col}")
-    ax.set_xlabel(f"{units[col]}")
+    ax.set_title(f"histogram of {col}")
+    ax.set_xlabel(f"{col} ({units[col]})")
     plt.show()
 
 #Look at columns
@@ -258,7 +256,7 @@ support.sum_stats("number", "Numeric Variable Summary", opendb.data)
 # values for plots.  You can either create multiple axis at the start of a plot
 #
 #
-# `fig, (ax1, ax2, ax3) = plt.subplots(ncols=3,ncols=2)`
+# `fig, (ax1, ax2, ax3) = plt.subplots(nrows=3,ncols=2)`
 
 #%%
 fig, (ax1, ax2, ax3) = plt.subplots(
@@ -289,6 +287,8 @@ plt.show()
 # 
 # 
 #%%
+
+
 #make the fig and axes variables
 fig, (ax1, ax2, ax3) = plt.subplots(
     nrows=3, 
@@ -373,9 +373,57 @@ plt.show()
 # Being that I would be its taken us a little bit to get to this point. We'll do one more 
 # quick graph before the fiddleheads is through.  Or maybe we flew to this point and we have
 # plenty of time.  I have no real concept of it in these presentations!  Lol.  I digress. 
+#
+# I would like tos how you a few other ways to access subplots by way of 
+# subplots(111), and using a row / col refence to which axis you're trying to look at.  
+# So.  Re-using our old code. If we changed the subplots call to something like. 
+# 
+# `fig, ax = plt.subplots(nrows=3,ncols=2,figsize=(10,8), height_ratios=[1, 3, 2])`
+#
+# So this time to access each of the grid items, we'll need to index the axis like a numpy
+# array of the same shape.  So if I wanto access the blood pressure chart of the last 
+# graph, I would need to use `ax[2, 1]` to correctly reference that axis
+#
+#%%
+fig, ax = plt.subplots(
+    nrows=3, 
+    ncols=2, 
+    figsize = (10, 8),
+    height_ratios=[1, 3, 2],# Adjust the height ratios of the rows on the grid
+)
+plt.subplots_adjust(wspace=0.2, hspace = 0.7)
+#First row of charts
+ax[0, 0].hist(opendb.data[numcols[0]])
+ax[0, 0].set_title(f"var -> {numcols[0]}")
+ax[0, 0].set_xlabel(f"ax_ref:ax[0, 0])]")                   
+ax[0, 1].hist(opendb.data[numcols[1]])
+ax[0, 1].set_title(f"var -> {numcols[1]}")
+ax[0, 1].set_xlabel(f"ax_ref:ax[0, 1])]")
 
+#Second row of charts
+ax[1, 0].hist(opendb.data[numcols[2]])
+ax[1, 0].set_title(f"var -> {numcols[2]}")
+ax[1, 0].set_xlabel(f"ax_ref:ax[1, 0])]")                   
+ax[1, 1].hist(opendb.data[numcols[3]])
+ax[1, 1].set_title(f"var -> {numcols[3]}")
+ax[1, 1].set_xlabel(f"ax_ref:ax[1, 1])]") 
 
+#3rd row of charts
+ax[2, 0].hist(opendb.data[numcols[4]])
+ax[2, 0].set_title(f"var -> {numcols[4]}")
+ax[2, 0].set_xlabel(f"ax_ref:ax[2, 0])]")                   
+ax[2, 1].hist(opendb.data[numcols[5]])
+ax[2, 1].set_title(f"var -> {numcols[5]}")
+ax[2, 1].set_xlabel(f"ax_ref:ax[2, 1])]")                   
 
+plt.show()
+
+#%%[markdown]
+#
+# You can see that this approach gets a little cumbersome with code repetition so its better
+# to try to operate in a stable iteration loop that gives you access to the variables
+# you need at the time you need them. 
+# 
 #%%[markdown]
 ####Eventual Heatmap finisher
 
