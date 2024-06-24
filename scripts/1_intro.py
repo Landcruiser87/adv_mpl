@@ -532,12 +532,14 @@ print(mask)
 # [jointplot docs](https://seaborn.pydata.org/generated/seaborn.jointplot.html#)
 #
 # I know i've been harping at you so far about how you need a `fig, ax` variable
-# to control a plot.  But I use this specific example to illustrate how
-# some libraries operate in a different fashion that may have a desired output,
-# but not use the same call structure.  Even when seaborn is built off of base
-# matplotlib!!  For the `jointplot` themselves, you use the `lazy reference` and 
-# *cannot* assign a plot value to a chart axis. 
+# to control a plot.  But I use this specific example to illustrate how some
+# libraries  may have a desired output, but not use the same call structure.
+# Even when seaborn is built off of base matplotlib!!  For the `jointplot`
+# themselves, you use the `lazy reference` and *cannot* assign a plot to a
+# chart axis. Which is weird, but because the `jointplot` is fairly specialized, 
+# they took that option away to make it easier to generate. 
 # 
+#
 # So its good to know both ways in some situations when those frameworks you're
 # used too may not be available.  As adding a linear regression plot to this
 # scatter, it shows you an important trend between these two target classes.
