@@ -106,7 +106,9 @@ import support
 # 2. The `Line plot`, `Markers`, and `Legend` are all tied to the main `Axes`
 #    object. (ie - the main chart area object)
 #
-# Each of these pairings exist in different levels of the chart, and the methods you have access to depend on where you are in that reference heirarchy. Which brings me to our next subject.
+# Each of these pairings exist in different levels of the chart, and the methods
+# you have access to depend on where you are in that reference heirarchy. Which
+# brings me to our next subject.
 #%%[markdown]
 
 ## 3. Figure Reference 
@@ -114,10 +116,10 @@ import support
 #### lazy reference vs object oriented. 
 #
 # In matplotlib, you have two ways to build up plots.  One, you can use the
-# `matplotlib.pyplot as plt` to reference the `current chart` or `Axes`
-# object.  Initially, this is how we all learn to plot with matplotlib but leads
-# to confusion down the road when you want to build more advanced
-# visualizations.  These calls looks like. 
+# `matplotlib.pyplot as plt` to reference the `current chart` or `Axes` object.
+# Initially, this is how we all learn to plot with matplotlib but leads to
+# confusion down the road when you want to build more advanced visualizations.
+# These calls looks like. 
 
 #%%
 fig, ax = plt.subplots(ncols=1, nrows=1, figsize=(10, 8))
@@ -136,9 +138,9 @@ plt.show()
 # `plt` as a reference is it `always references/ties you to the last chart
 # object you created.` So in the code block above, you access to both the `fig`
 # and `ax` objects / variables from the `plt.subplots` return, but by
-# referencing `plt` when you're plotting, you're referencing the `last chart that
-# you built` which is the **look at this graph** chart. When you call plt, these are the actions
-# that happen in the background with matplotlib. 
+# referencing `plt` when you're plotting, you're referencing the `last chart
+# that you built` which is the **look at this graph** chart. When you call plt,
+# these are the actions that happen in the background with matplotlib. 
 # 
 # ![plt call](https://realpython.com/cdn-cgi/image/width=753,format=auto/https://files.realpython.com/media/flow.a210eb81a42b.jpg)
 #
@@ -147,21 +149,22 @@ plt.show()
 # So you can see with multiple plot calls or changes you'd like made, the
 # software gets increasingly overloaded and causes the software to hang, crap
 # out and eventually crash.  Which is the one thing we've all experienced using
-# this library.  But none of knew why.  Well.  Turns out this is a thing. So. In order to 
-# combat this...   
+# this library.  But none of knew why.  Well.  Turns out this is a thing. So. In
+# order to combat this...   
 # 
 # ```you need a variable reference to the thing you want to change```
 #
 # This is why *I highly suggest* you use `object oriented programming` to create
 # a solid reference to the item you wish to manipulate.  Ultimately, this gives
 # you more control over each chart object, and lowers the computational
-# requirement when matplotlib doesn't have to call mutiple methods to find
-# the last object you created. 
+# requirement when matplotlib doesn't have to call mutiple methods to find the
+# last object you created. 
 # 
 #%%[markdown]
 ## 4. GRAPHS GRAPHS GRAPHS
 #
-# So for starters, lets begin with the suggested OO approach to creating a matplotlib chart. 
+# So for starters, lets begin with the suggested OO approach to creating a
+# matplotlib chart. 
 #
 # `fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(10, 8))`
 #
@@ -195,8 +198,8 @@ plt.show()
 #   difference and width difference with respect to each row / col of a plot
 #   layout. 
 # - `1ayout` - Set equal to "constrained". This automatically shifts legends and
-#   axis labels to fit within the grid of charts. But, the main way you should control the
-#   spacing of a grid of charts is with the following method. 
+#   axis labels to fit within the grid of charts. But, the main way you should
+#   control the spacing of a grid of charts is with the following method. 
 # 
 # `plt.subplots_adjust(wspace=0.1, hspace = 0.7)` 
 # 
@@ -290,7 +293,8 @@ plt.show()
 # second (ax[1] in the code) is the right most chart **_main axis_** `for that
 # row`
 # 
-# To give you a better picture of what I mean, Lets throw in some UCI data to help visualize what i'm talking about.
+# To give you a better picture of what I mean, Lets throw in some UCI data to
+# help visualize what i'm talking about.
 # 
 # 
 #%%
@@ -322,9 +326,10 @@ for ax in [ax1, ax2, ax3]:
     ax[1].set_title(f"ax[1]")
     ax[1].legend(loc="lower left")
     idx += 1
-    #Next I want to draw an arrow from the middle of the left chart to to the middle of the 
-    #right chart.  Normally I could use matplotlibs Arrow or FancyArrow object for this, but
-    #matplotlib has a dedicated function for this called ConnectionPatch.  So we'll use that. 
+    #Next I want to draw an arrow from the middle of the left chart to to the
+    #middle of the right chart.  Normally I could use matplotlibs Arrow or
+    #FancyArrow object for this, but matplotlib has a dedicated function for
+    #this called ConnectionPatch.  So we'll use that. 
     #Thought process below on how to draw the arrows.
     # Calculate the midpoint of each pair of side by side graphs. Do so by
     #accessing the get_xlim, and get_ylim methods, and creating coordinates to
@@ -376,9 +381,9 @@ plt.show()
 
 #%%[markdown]
 # Now we can begin to see how matplotlib layers its references one on top of the
-# other in that `object oriented` style fashion.  The reference to the object that
-# you want to change is just a matter of correctly selecting the object in the plot
-# stack.  Much like scraping websites for html tags!
+# other in that `object oriented` style fashion.  The reference to the object
+# that you want to change is just a matter of correctly selecting the object in
+# the plot stack.  Much like scraping websites for html tags!
 # 
 # Being that its taken us a bit to get to this point. We'll do one more quick
 # graph before the fiddleheads is through.  Or maybe we flew to this point and
@@ -386,9 +391,9 @@ plt.show()
 # presentations! Lol.  I digress.
 # 
 # I would like to show you a few other ways to access subplots by way of
-# subplots(111), and using a `[row / col]` reference to which axis you're trying to
-# look at.  I wouldn't rely on the former 3 single digit format method as its a
-# bit outdated and gets very confusing.
+# subplots(111), and using a `[row / col]` reference to which axis you're trying
+# to look at.  I wouldn't rely on the former 3 single digit format method as its
+# a bit outdated and gets very confusing.
 #
 # So.  Re-using our old code. If we changed the subplots call to something like. 
 # 
@@ -438,19 +443,19 @@ plt.show()
 
 #%%[markdown]
 #
-# You can see that this approach gets a little cumbersome with code repetition so its better
-# to try to operate in a stable iteration loop that gives you access to each row of charts that
-# you want to manipulate as in the example above.  But!  Enough of the crazy grid talk.  Lets 
-# make something cool!  
+# You can see that this approach gets a little cumbersome with code repetition
+# so its better to try to operate in a stable iteration loop that gives you
+# access to each row of charts that you want to manipulate as in the example
+# above.  But!  Enough of the crazy grid talk.  Lets make something cool!  
 #
-# For our next plot, we're looking for a way to visualize something we all should have a 
-# saved script for.  The correlation heatmap!   
+# For our next plot, we're looking for a way to visualize something we all
+# should have a saved script for.  The correlation heatmap!   
 # 
 # **Que the gong**
 #
-# These are always a good idea in the early stages of exploration.  They're also amazingly 
-# easy to concoct with the help of `seaborns heatmap` method.  So check out how 
-# easy it is to make these with just a few lines of code.  
+# These are always a good idea in the early stages of exploration.  They're also
+# amazingly easy to concoct with the help of `seaborns heatmap` method.  So
+# check out how easy it is to make these with just a few lines of code.  
 # 
 
 #%%
@@ -512,10 +517,11 @@ print(mask)
 # - `cmap`        - Color map you'd like to use to show min to max color shading
 #
 #
-# You also may want to adjust what colormap the plot uses to express ranges.  Here is where
-# you would go to find those!   Either Seaborns colormaps, or matplotlibs
-# colormaps.  They're quite similar so I usually just use matplotlibs colormaps.
-# (As we all remember that seaborn is built on top of MPL)
+# You also may want to adjust what colormap the plot uses to express ranges.
+# Here is where you would go to find those!   Either Seaborns colormaps, or
+# matplotlibs colormaps.  They're quite similar so I usually just use
+# matplotlibs colormaps. (As we all remember that seaborn is built on top of
+# MPL)
 #
 # [MPL color map references](https://matplotlib.org/stable/gallery/color/colormap_reference.html)
 # 
@@ -544,14 +550,12 @@ print(mask)
 # used too may not be available.  As adding a linear regression plot to this
 # scatter, it shows you an important trend between these two target classes.
 # Namely how higher creatinine levels indicate worse kidney function and look to
-# only be in the deceased target class. association with those that passed away
-# in this dataset.  Higher the value, the worse filtration you see.  But, now
-# you can easily see the difference between the two groups and how part of this
-# lecture. 
+# more associated with death in the target class. Higher the value, the worse
+# filtration you see. 
 # 
 #
-# Stay tuned for the next lecture when we dive into 
-# two main area's for development.  VSCodes native `debugger` and the `Gridspec` object in 
+# Stay tuned for the next lecture when we dive into two main area's for
+# development.  VSCodes native `debugger` and the `Gridspec` object in
 # `matplotlib`  
 
 #%%
