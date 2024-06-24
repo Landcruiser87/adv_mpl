@@ -11,7 +11,7 @@ import support
 ## Matplotlib! (Lecture 1)
 #
 #### The only graphing library you'll ever need.
-#### By Andy Heroy (6/25/24)
+#### By: Andy Heroy (6/25/24)
 # 
 
 # Given its age and maturity.  Matplotlib has been around for quite some time
@@ -177,12 +177,13 @@ plt.show()
 # - `ax` -> which sits on top of fig, but is tied to it.  Meaning commands will
 #   cascade down to their intended object if referenced correctly
 #
-# If we go to the docs page of `plt.subplots`, we find some interesting inputs for us to 
-# choose from!  
+# If we go to the docs page of `plt.subplots`, we find some interesting inputs
+# for us to choose from!  
 #
 # [subplots docs](https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.subplots.html)
 # 
-# Here are a few other parameters that will usually be important fast/easy chart creation.
+# Here are a few other parameters that will usually be important for fast/easy
+# chart creation.
 # 
 # - `nrows`, `ncols` - Num of rows and cols
 # - `sharex`, `sharey` - Self explanatory, but important to remember.  Say you
@@ -212,9 +213,9 @@ plt.show()
 # 
 
 #%%
-#openml id 43008 for uci heart.  Read it into memory so we don't have to store it.
-#NOTE:-The returned object here is a custom dataclass.  The structure of which is formatted
-#below.
+# openml id 43008 for uci heart.  Read it into memory so we don't have to store it.
+# NOTE:-The returned object here is a custom dataclass.  The structure of
+# which is shown below.
 
 # @dataclass
 # class OpenDB():
@@ -230,8 +231,8 @@ opendb = support.grab_dataset(43008)
 #Select numeric columns
 numcols = opendb.data.select_dtypes("number").columns.tolist()
 
-#Grab the units from the description.Index a newline split from 13 to the 3rd
-#from the last.
+# Grab the units from the description. Index a newline split from 13 to the 3rd
+# charater.(all the rows with variables)
 raw_units = opendb.data_description.split("\n")[13:-3]
 
 #Extract the units from the dataset description
@@ -263,17 +264,17 @@ support.sum_stats("number", "Numeric Variable Summary", opendb.data)
 
 #%%[markdown]
 
-# Now , that's a nice way to loop individual columns to take a look at
-# histograms.  What if we tried to put it all the same plot? How would i
-# reference each axis then? Luckily, matplotlib has an intelligent way it maps
-# out how each axis is controlled. There's a few different ways to reference them.
+# That's a nice way to loop individual columns to take a look at histograms.
+# What if we tried to put it all the same plot? How would i reference each axis
+# then? Luckily, matplotlib has an intelligent way it maps out how each axis is
+# controlled. There's a few different ways to reference them.
 #
 #### 1st way. Direct axis index reference. 
 #
 # This is honestly the way I go most of the time when wanting to have a direct
 # variable for the axes.  Say, we wanted to look at a 3 x 2 grid to assign
-# values for plots.  We would load up the fig and ax variables as such. Each ax
-# variable represents a row within the chart grid. So here we have 3 axis' to
+# values for plots.  We would load up the fig and ax variables as such. `Each ax`
+# variable `represents a row` within the `chart grid`. So here we have 3 axis' to
 # represent the rows we want to control.
 #
 #
