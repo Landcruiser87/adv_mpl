@@ -19,9 +19,9 @@ import support
 # that you may have and / or want to explore.  Its incredibly dense
 # documentation, that is also somewhat outdated, but is quite good once you
 # understand how they structure their information.  As a reference, many of the
-# subjects / images from this talk come from this reference on
-# [**_RealPython_**](https://realpython.com/python-matplotlib-guide/). They make
-# excellent articles and guide material for programming in python.  
+# subjects / images from this talk come from this reference on [**_MPL Guide
+# RealPython_**](https://realpython.com/python-matplotlib-guide/). They write
+# excellent articles and guideline material for programming in python.  
 #
 # As an overview, our talk tonight will be sectioned into 3 main parts. 
 #
@@ -74,7 +74,7 @@ import support
 # [RealPython - imagesource](https://realpython.com/cdn-cgi/image/width=385,format=auto/https://files.realpython.com/media/fig_map.bc8c7cabd823.png)
 #
 # As you can see, we've got our `figure` as the main container, with an `Axes`
-# object on top of that that houses the chart data/title.  Then `two more Axis`
+# object on top of that which houses the chart data/title.  Then `two more Axis`
 # objects on top of the `Axes` chart object to make up our X and Y Axis.  You're
 # beginning to see, but 
 # 
@@ -113,13 +113,15 @@ import support
 #
 #### lazy reference vs object oriented. 
 #
-# In matplotlib, you have two ways to build up plots.  One, you can use the `matplotlib.pyplot` or `plt` to reference the `current chart` or `Axes` object.  
-# Initially, this is how all learn to plot with matplotlib but leads to confusion down the road when you want to build more advanced visualizations.  
-# These calls looks like. 
+# In matplotlib, you have two ways to build up plots.  One, you can use the
+# `matplotlib.pyplot as plt` to reference the `current chart` or `Axes`
+# object.  Initially, this is how we all learn to plot with matplotlib but leads
+# to confusion down the road when you want to build more advanced
+# visualizations.  These calls looks like. 
 
 #%%
 fig, ax = plt.subplots(ncols=1, nrows=1, figsize=(10, 8))
-rand_arr = np.random.randint(low=5, high=10, size=(10,2))
+rand_arr = np.random.randint(low=5, high=50, size=(10,2))
 plt.plot(rand_arr[:, 0], label="random 1")
 plt.plot(rand_arr[:, 1], label="random 2")
 plt.legend(loc="upper left")
@@ -134,8 +136,8 @@ plt.show()
 # `plt` as a reference is it `always references/ties you to the last chart
 # object you created.` So in the code block above, you access to both the `fig`
 # and `ax` objects / variables from the `plt.subplots` return, but by
-# referencing `plt` when you're plotting are referencing the `last chart that
-# you built` which is the look at this graph chart. When you call plt, these are the actions
+# referencing `plt` when you're plotting, you're referencing the `last chart that
+# you built` which is the **look at this graph** chart. When you call plt, these are the actions
 # that happen in the background with matplotlib. 
 # 
 # ![plt call](https://realpython.com/cdn-cgi/image/width=753,format=auto/https://files.realpython.com/media/flow.a210eb81a42b.jpg)
@@ -156,7 +158,7 @@ plt.show()
 # requirement when matplotlib doesn't have to call mutiple methods to find
 # the last object you created. 
 # 
-# 
+#%%[markdown]
 ## 4. GRAPHS GRAPHS GRAPHS
 #
 # So for starters, lets begin with the suggested OO approach to creating a matplotlib chart. 
@@ -164,7 +166,8 @@ plt.show()
 # `fig, ax = plt.subplots(nrows=1, ncols=1, figsize=(10, 8))`
 #
 # What this does is creates a plot with the flexibility to create different
-# layouts depending on what you need to display. You'll wind up with two refences.  
+# layouts depending on what you need to display. You'll wind up with two return
+# variables from the `plt.subplots` call.  
 #
 # - `fig` -> which is the backbone of the plot and sits at the bottom of the
 #   stack.
@@ -216,7 +219,7 @@ numcols = opendb.data.select_dtypes("number").columns.tolist()
 #from the last.
 raw_units = opendb.data_description.split("\n")[13:-3]
 
-#Loop and extract units
+#Extract the units from the dataset description
 units = {}
 for idx, unit in enumerate(raw_units):
     colname = unit.split(":")[0].strip("-").strip()
@@ -252,9 +255,11 @@ support.sum_stats("number", "Numeric Variable Summary", opendb.data)
 #
 #### 1st way. Direct axis index reference. 
 #
-# This is honestly the way I go most of the time when wanting to have a direct 
-# variable for the axes.  Say, we wanted to look at a 3 x 2 grid to assign 
-# values for plots.  You can either create multiple axis at the start of a plot
+# This is honestly the way I go most of the time when wanting to have a direct
+# variable for the axes.  Say, we wanted to look at a 3 x 2 grid to assign
+# values for plots.  We would load up the fig and ax variables as such. Each ax
+# variable represents a row within the chart grid. So here we have 3 axis' to
+# represent the rows we want to control.
 #
 #
 # `fig, (ax1, ax2, ax3) = plt.subplots(nrows=3,ncols=2)`
@@ -278,11 +283,12 @@ plt.show()
  #%%[markdown]
 #
 # Here you can see how each axis is referenced in the title of each plot. We ran
-# a for loop over each of the axis variables we created with `plt.subplots`.
-# Those will serve as the `rows` of the 3 row, 2 column chart. Within each of
-# those rows, there's a numpy array that houses two elements. The first (ax[0]
-# in the code) is the leftmost charts **_main axis_**. The second (ax[1] in the
-# code) is the right most charts **_main axis_** `for that row`
+# a for loop over each of the axis variables [ax1, ax2, ax3] we created with
+# `plt.subplots`. Those will serve as the `rows` for the 3 row, 2 column chart.
+# Within each of those rows, there's a numpy array that houses two elements. The
+# first (ax[0] in the code) is the leftmost chart in the **_main axis_**. The
+# second (ax[1] in the code) is the right most chart **_main axis_** `for that
+# row`
 # 
 # To give you a better picture of what I mean, Lets throw in some UCI data to help visualize what i'm talking about.
 # 
@@ -319,15 +325,18 @@ for ax in [ax1, ax2, ax3]:
     #Next I want to draw an arrow from the middle of the left chart to to the middle of the 
     #right chart.  Normally I could use matplotlibs Arrow or FancyArrow object for this, but
     #matplotlib has a dedicated function for this called ConnectionPatch.  So we'll use that. 
-    #
-    #Calculate the midpoint of each pair of side by side graphs.
-    # Do so by accessing the get_xlim, and get_ylim methods, and creating coordinates to the middle of each plot for the arrow to reference. 
-    # the coordsA and coordsB parameters for the ConnectionPatch object handle the transformation
-    # between the two ranges.
+    #Thought process below on how to draw the arrows.
+    # Calculate the midpoint of each pair of side by side graphs. Do so by
+    #accessing the get_xlim, and get_ylim methods, and creating coordinates to
+    # the middle of each plot for the arrow to reference. the coordsA and
+    # coordsB parameters for the ConnectionPatch object handle the
+    # transformation between the two ranges.
     # Note:
         # I only took the floor divisions for the first two variables because as
-        # luck would have it, the right most variables are all on a binary scale. So taking the floor
-        # divisino of 1 is zero  meaning the arrow didn't render properly
+        # luck would have it, the right most variables are all on a binary
+        # scale. So taking the floor division of 1 is zero  meaning the arrow
+        # didn't render all the way to the midpoint.  
+        
     x_midA = sum(list(ax[0].get_xlim())) // 2
     y_midA = sum(list(ax[0].get_ylim())) // 2
     x_midB = sum(list(ax[1].get_xlim())) / 2
@@ -348,9 +357,9 @@ for ax in [ax1, ax2, ax3]:
     )
     #apply it to the figure
     fig.patches.append(special_arrow)
-    #Little counter for the axis we're on
+    #Little counter for the row (ax) of the chart we're on
     ax_count += 1
-    #Maka da text annotation!  ehhhhhh :pinched_fingers:
+    #Maka da text annotation!  ayyyyyee :pinched_fingers:
     ax[1].annotate(
         text = f"Ax{ax_count} variable",
         xy=(0.5, 0.7), 
