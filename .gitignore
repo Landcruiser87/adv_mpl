@@ -129,7 +129,6 @@ dmypy.json
 .pyre/
 
 #Project specific folders
-/results
 /secret
 /scrap
 /.mp_venv
