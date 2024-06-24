@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 from matplotlib.patches import ConnectionPatch
+import seaborn as sns
 import support
 
 #%%[markdown]
@@ -108,7 +109,7 @@ import support
 # Each of these pairings exist in different levels of the chart, and the methods you have access to depend on where you are in that reference heirarchy. Which brings me to our next subject.
 #%%[markdown]
 
-### 3. Figure Reference 
+## 3. Figure Reference 
 #
 #### lazy reference vs object oriented. 
 #
@@ -156,7 +157,7 @@ plt.show()
 # the last object you created. 
 # 
 # 
-### 4. GRAPHS GRAPHS GRAPHS
+## 4. GRAPHS GRAPHS GRAPHS
 #
 # So for starters, lets begin with the suggested OO approach to creating a matplotlib chart. 
 #
@@ -415,47 +416,67 @@ ax[2, 0].set_xlabel(f"ax_ref:ax[2, 0])]")
 ax[2, 1].hist(opendb.data[numcols[5]])
 ax[2, 1].set_title(f"var -> {numcols[5]}")
 ax[2, 1].set_xlabel(f"ax_ref:ax[2, 1])]")                   
-
+plt.suptitle("Numerical Variable Exploration", size=20)
 plt.show()
 
 #%%[markdown]
 #
 # You can see that this approach gets a little cumbersome with code repetition so its better
-# to try to operate in a stable iteration loop that gives you access to the variables
-# you need at the time you need them. 
+# to try to operate in a stable iteration loop that gives you access to each row of charts that
+# you want to manipulate as in the example above.  But!  Enough of the crazy grid talk.  Lets 
+# make something cool!  
+#
+# For our next plot, we're looking for a way to visualize something we all should have a 
+# saved script for.  The correlation heatmap!   <Que the gong>  
+#
+# These are always a good idea in the early stages of exploration.  They're also amazingly 
+# easy to concoct with the help of `seaborns heatmap` method.  
 # 
+
+#%%
+#
+#Make correlation Heatmap chart
+fig, ax = plt.subplots(figsize=(16, 12))
+mask = np.triu(np.ones_like(opendb.data[numcols].corr(), dtype=bool))
+heatmap = sns.heatmap(
+    data = opendb.data.corr(),
+    ax = ax,
+    mask=mask,
+    vmin=-1, 
+    vmax=1,
+    annot=True, 
+    annot_kws={
+        'fontsize':14,
+    },
+    xticklabels=numcols,
+    yticklabels=numcols,
+    fmt='.1f',
+    cmap='RdYlGn')
+
+heatmap.set_title('Correlation Heatmap', fontdict={'fontsize':30})
+plt.xticks(size=8, rotation=-90)
+plt.yticks(size=8,)
+plt.show()
+
 #%%[markdown]
-####Eventual Heatmap finisher
+# 
+# For a look at their documentation.... (are we seeing a theme) Go here!  
+#
+# [Heat MAAAAP](https://seaborn.pydata.org/generated/seaborn.heatmap.html)
+# 
+# To explain some of the input parameters a little better. 
+# - `data`        - Your data you want to plot
+# - `mask`        - Shape of the thing you want to mirror
+# - `vmin`        - minimum value for range
+# - `vmax`        - maximum value for range
+# - `annot`       - Whether to set the annotations
+# - `annot_kws`   - Sub arguments for font control
+# - `xticklabels` - labels for the x axis
+# - `yticklabels` - labels for the y axis
+# - `fmt`         - What format you want the corrrelation values
+# - `cmap`        - Color map you'd like to use to show min to max color shading
+#
 
-    # cols = [ "avg_spo2", "sleep_score", "sleep_deep", "sleep_efficiency",
-    #   "sleep_latency", "sleep_rem", "sleep_restfulness", "sleep_timing",
-    #   "sleep_total", "read_score", "read_tempdev", "read_tempdev_trend",
-    #   "read_act_bal", "read_body_temp", "read_hrv_bal", "read_prev_day_act",
-    #   "read_prev_night", "read_recover_idx", "read_resting_hr",
-    #   "read_sleep_bal", "act_score", "act_active_cal", "act_avg_met_min",
-    #   "act_eq_walk_dist", "act_non_wear_time", "act_resting_time",
-    #   "act_sed_time", "act_sed_met_min", "act_steps", "act_target_calories",
-    #   "act_total_calories"]
 
-    # #Make correlation chart
-    # fig, ax = plt.subplots(figsize=(16, 12))
-    # mask = np.triu(np.ones_like(oura_dt['data'].corr(), dtype=bool))
-    # heatmap = sns.heatmap(
-    #     data = oura_dt['data'].corr(),
-    #     ax = ax,
-    #     mask=mask,
-    #     vmin=-1, 
-    #     vmax=1,
-    #     annot=True, 
-    #     annot_kws={
-    #         'fontsize':6,
-    #     },
-    #     xticklabels=cols,
-    #     yticklabels=cols,
-    #     fmt='.1f',
-    #     cmap='RdYlGn')
-
-    # heatmap.set_title('Correlation Heatmap', fontdict={'fontsize':40})
-    # plt.xticks(size=8, rotation=-90)
-    # plt.yticks(size=8,)
-    # plt.show()'
+#TODO - Do a tree map next.  
+#Will need a new dataset. 
