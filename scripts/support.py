@@ -44,7 +44,23 @@ def grab_dataset(dataset_id:int):
             0:"living",
             1:"deceased"
         }
+    # elif dataset_id == 45948:
+    #     #If its the electric cars oneone.  Clean and load as such. 
+    #     OpenDB.target = dataset["data"]["DEATH_EVENT"]
+    #     OpenDB.data = dataset["data"].drop("DEATH_EVENT", axis=1) 
+    #     OpenDB.data_description = dataset['DESCR']
 
+    #     if 'target_names' in dataset.keys():
+    #         if isinstance(dataset["target_names"], list):
+    #             OpenDB.target_names = np.array(["living", "deceased"], dtype="U9")
+
+    #     if 'feature_names' in dataset.keys():
+    #         OpenDB.feature_names = list(dataset['feature_names'])
+        
+    #     OpenDB.rev_target_dict = {
+    #         0:"living",
+    #         1:"deceased"
+    #     }
     return OpenDB
 
 #old loader code

@@ -443,7 +443,7 @@ plt.show()
 fig, ax = plt.subplots(figsize=(16, 12))
 mask = np.triu(np.ones_like(opendb.data[numcols].corr(), dtype=bool))
 heatmap = sns.heatmap(
-    data = opendb.data.corr(),
+    data = opendb.data[numcols].corr(),
     ax = ax,
     mask=mask,
     vmin=-1, 
@@ -451,38 +451,54 @@ heatmap = sns.heatmap(
     annot=True, 
     annot_kws={
         'fontsize':14,
+        'fontweight':'demibold'
     },
     xticklabels=numcols,
     yticklabels=numcols,
     fmt='.1f',
-    cmap='RdYlGn')
+    cmap='RdYlGn') #'RdYlGn'
 
-heatmap.set_title('Correlation Heatmap', fontdict={'fontsize':30})
-plt.xticks(size=8, rotation=-90)
-plt.yticks(size=8,)
+heatmap.set_title('Correlation Heatmap', fontdict={'fontsize':32})
+plt.xticks(size=15, rotation=55)
+plt.yticks(size=15)
 plt.show()
-
-#TODO - rotate tick labels.
-#
 
 #%%[markdown]
 # 
 # For a look at their documentation.... (are we seeing a theme) Go here!  
 #
-# [Heat MAAAAP](https://seaborn.pydata.org/generated/seaborn.heatmap.html)
+# [Heat Map docs](https://seaborn.pydata.org/generated/seaborn.heatmap.html)
 # 
-# To explain some of the input parameters a little better. 
+# To explain some of the input parameters for the `sns heatmap` graph.
 # - `data`        - Your data you want to plot
-# - `mask`        - Shape of the thing you want to mirror
+# - `mask`        - A neat trick to hide data you don't want. We can select the
+#   upper half of the correlation matrix `np.triu` to only reveal the values
+#   that have a correlation value. Then assign it to an array of one's
+#   `np.ones_like` that tell whether the data is present. By selecting only the
+#   upper half of the triangle of the array, we flip it down onto the bottom
+#   axis so it is easier to represent only that half of the data.  If we had
+#   used `np.tril` we would have an inverted version of the table and only the
+#   upper right side of the triangle would return.  Its a little confusing.. so
+#   here's a usage of `np.triu` in the mask variable.  
+#   ![mask](images\mask.png)
 # - `vmin`        - minimum value for range
 # - `vmax`        - maximum value for range
-# - `annot`       - Whether to set the annotations
-# - `annot_kws`   - Sub arguments for font control
+# - `annot`       - Whether to set the annotations (bool)
+# - `annot_kws`   - Sub arguments for font control (dict)
 # - `xticklabels` - labels for the x axis
 # - `yticklabels` - labels for the y axis
 # - `fmt`         - What format you want the corrrelation values
 # - `cmap`        - Color map you'd like to use to show min to max color shading
 #
+#
+# You also may want to adjust what colormap the plot uses to express ranges.  Here is where
+# you would go to find those!   Either Seaborns colormaps, or matplotlibs
+# colormaps.  They're quite similar so I usually just use matplotlibs colormaps.
+# (As we all remember that seaborn is built on top of MPL)
+#
+# [MPL color map references](https://matplotlib.org/stable/gallery/color/colormap_reference.html)
+# 
+# [Seaborn color map references](https://seaborn.pydata.org/generated/seaborn.color_palette.html)
 
 #%%
 #TODO - Do a tree map next.  
