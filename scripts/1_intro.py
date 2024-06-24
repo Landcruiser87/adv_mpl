@@ -6,7 +6,7 @@ from matplotlib.patches import ConnectionPatch
 import seaborn as sns
 import support
 
-#%% [markdown]
+#%%[markdown]
 #
 ## Matplotlib! (Lecture 1)
 #
@@ -37,7 +37,7 @@ import support
 #
 # [**Look at this graph**](https://youtu.be/sz2mmM-kN1I?si=oy-Dl0wIc6fENHHa)
 #
-#%% [markdown]
+#%%[markdown]
 ## 1. Plan
 #
 # - HAVE A PLAN. Or at least some idea of what you want to make.  My go to
@@ -82,7 +82,7 @@ import support
 # 
 # Once you start thinking of the library in this way, everything starts to make sense. 
 #
-#%% [markdown]
+#%%[markdown]
 
 ## 2. Anatomy
 #
