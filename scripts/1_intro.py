@@ -375,8 +375,12 @@ plt.show()
 # quick graph before the fiddleheads is through.  Or maybe we flew to this point and we have
 # plenty of time.  I have no real concept of it in these presentations!  Lol.  I digress. 
 #
-# I would like tos how you a few other ways to access subplots by way of 
-# subplots(111), and using a row / col refence to which axis you're trying to look at.  
+# I would like tos how you a few other ways to access subplots by way of
+# subplots(111), and using a row / col refence to which axis you're trying to
+# look at.  I woudln't rely on the former 3 single digit format method as its a
+# bit outdated and gets very confusing.
+# 
+#
 # So.  Re-using our old code. If we changed the subplots call to something like. 
 # 
 # `fig, ax = plt.subplots(nrows=3,ncols=2,figsize=(10,8), height_ratios=[1, 3, 2])`
@@ -458,6 +462,9 @@ plt.xticks(size=8, rotation=-90)
 plt.yticks(size=8,)
 plt.show()
 
+#TODO - rotate tick labels.
+#
+
 #%%[markdown]
 # 
 # For a look at their documentation.... (are we seeing a theme) Go here!  
@@ -477,6 +484,11 @@ plt.show()
 # - `cmap`        - Color map you'd like to use to show min to max color shading
 #
 
-
+#%%
 #TODO - Do a tree map next.  
 #Will need a new dataset. 
+#45948
+#electric cars?  Sure?!
+
+#TODO - maybe a jointplot? Those are nice. 
+
