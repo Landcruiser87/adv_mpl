@@ -58,18 +58,15 @@ Copy data to data directory
 
 ## Main Outline
 
-1. General overview of how to plot
+#### Intro
+
+1. [x] General overview of how to plot
    - https://realpython.com/python-matplotlib-guide/
-   - 
+#### Gridspec
 2. Layering multiple plots on a GridSpec
-3. objects
-4. Embed ML routines
-5. Plot animation
-6. Use of debugger in plotting.  The best trial and error and object exploration
+3. Use of debugger in plotting.  The best trial and error and object exploration
+#### All the rest
+4. objects
+5. Embed ML routines
+6. Plot animation
 7. Python - graph - gallery
-
-## Project TODO List
-
-#### Main tasks
-
-[ ] Build Examples of each chapter

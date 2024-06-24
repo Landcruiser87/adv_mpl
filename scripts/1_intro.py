@@ -382,8 +382,8 @@ plt.show()
 #
 # Being that its taken us a = bit to get to this point. We'll do one more quick
 # graph before the fiddleheads is through.  Or maybe we flew to this point and
-# we have plenty of time.  I have no real concept of it in these presentations!
-# Lol.  I digress. 
+# we have plenty of time.  I have no real concept of time in these
+# presentations! Lol.  I digress. 
 #
 # I would like to show you a few other ways to access subplots by way of
 # subplots(111), and using a `[row / col]` reference to which axis you're trying to
@@ -394,9 +394,10 @@ plt.show()
 # 
 # `fig, ax = plt.subplots(nrows=3,ncols=2,figsize=(10,8), height_ratios=[1, 3, 2])`
 #
-# So this time to access each of the grid items, we'll need to index the axis like a numpy
-# array of the same shape.  So if I wanto access the blood pressure chart of the last 
-# graph, I would need to use `ax[2, 1]` to correctly reference that chart axis.
+# So this time to access each of the grid items, we'll need to index the axis
+# like a numpy array of the same shape.  So if I wanto access the blood pressure
+# chart of the last graph, I would need to use `ax[2, 1]` to correctly reference
+# that main chart axes.
 #
 #%%
 fig, ax = plt.subplots(
@@ -450,7 +451,9 @@ plt.show()
 # 
 
 #%%
-#
+# For reference.  numcols var we created earlier
+# numcols = opendb.data.select_dtypes("number").columns.tolist()
+
 #Make correlation Heatmap chart
 fig, ax = plt.subplots(figsize=(12, 8))
 mask = np.triu(np.ones_like(opendb.data[numcols].corr(), dtype=bool))
