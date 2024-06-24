@@ -170,13 +170,12 @@ plt.show()
 #
 # What this does is creates a plot with the flexibility to create different
 # layouts depending on what you need to display. You'll wind up with two return
-# variables from the `plt.subplots` call.  
+# variables from the `plt.subplots` call.  `fig` and `ax`
 #
 # - `fig` -> which is the backbone of the plot and sits at the bottom of the
 #   stack.
 # - `ax` -> which sits on top of fig, but is tied to it.  Meaning commands will
 #   cascade down to their intended object if referenced correctly
-# - `figsize` - Passed in as a tuple, but an easyway to control size. 
 #
 # If we go to the docs page of `plt.subplots`, we find some interesting inputs for us to 
 # choose from!  
@@ -194,6 +193,7 @@ plt.show()
 #   when its always a good idea to go to the docs, root aroud for the object
 #   you're trying to use, and see what methods you have available or where you
 #   went wrong.
+# - `figsize` - Passed in as a tuple, but an easyway to control size. 
 # - `height_ratios`, `width_ratios` - These control how much of a height
 #   difference and width difference with respect to each row / col of a plot
 #   layout. 
@@ -212,7 +212,19 @@ plt.show()
 # 
 
 #%%
-# 43008 uci heart
+#openml id 43008 for uci heart.  Read it into memory so we don't have to store it.
+#NOTE:-The returned object here is a custom dataclass.  The structure of which is formatted
+#below.
+
+# @dataclass
+# class OpenDB():
+#     target           = pd.Series    (target variable)
+#     data             = pd.DataFrame (dataset)
+#     data_description = str          (dataset description)
+#     target_names     = list,        (values found in target variable)
+#     feature_names    = list         (dataset column names )
+#     rev_target_dict  = dict         (numbered dict with target_names) - used for transformations when graphing
+
 opendb = support.grab_dataset(43008)
 
 #Select numeric columns
