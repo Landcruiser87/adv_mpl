@@ -379,12 +379,12 @@ plt.show()
 # other in that `object oriented` style fashion.  The reference to the object that
 # you want to change is just a matter of correctly selecting the object in the plot
 # stack.  Much like scraping websites for html tags!
-#
-# Being that its taken us a = bit to get to this point. We'll do one more quick
+# 
+# Being that its taken us a bit to get to this point. We'll do one more quick
 # graph before the fiddleheads is through.  Or maybe we flew to this point and
 # we have plenty of time.  I have no real concept of time in these
-# presentations! Lol.  I digress. 
-#
+# presentations! Lol.  I digress.
+# 
 # I would like to show you a few other ways to access subplots by way of
 # subplots(111), and using a `[row / col]` reference to which axis you're trying to
 # look at.  I wouldn't rely on the former 3 single digit format method as its a
@@ -399,13 +399,16 @@ plt.show()
 # chart of the last graph, I would need to use `ax[2, 1]` to correctly reference
 # that main chart axes.
 #
+#
+
 #%%
 fig, ax = plt.subplots(
-    nrows=3, 
+    nrows=3,
     ncols=2, 
     figsize = (10, 8),
     height_ratios=[1, 3, 2],# Adjust the height ratios of the rows on the grid
 )
+
 plt.subplots_adjust(wspace=0.2, hspace = 0.7)
 #First row of charts
 ax[0, 0].hist(opendb.data[numcols[0]])
@@ -518,11 +521,45 @@ print(mask)
 # 
 # [Seaborn color map references](https://seaborn.pydata.org/generated/seaborn.color_palette.html)
 
-#%%
-#TODO - Do a tree map next.  
-#Will need a new dataset. 
-#45948
-#electric cars?  Sure?!
+#%%[markdown]
 
-#TODO - maybe a jointplot? Those are nice. 
+#For our final chart of the evening.  This is one of my favorite seaborn charts
+#available. (Ok so maybe i use it more than a little, but none the less, its a
+#very powerful visualization.  Its called the jointplot and makes excellent
+#usage of otherwise useless margins tos how you the distribution for the
+#variable, with the scatter underneath. 
+
+#%%
+from matplotlib.pyplot import cm
+
+feat_1 = 'ejection_fraction'
+feat_2 = 'serum_creatinine'
+hue_target = opendb.target.map(opendb.rev_target_dict)
+hue_grant  = sorted(opendb.rev_target_dict.items(), key=lambda x:x[0])
+hue_grant = [x[1] for x in hue_grant]
+n = len(hue_grant)
+pal = sns.color_palette(palette="tab10", n_colors=n)
+hue_dict = {hue_grant[v]:pal[v] for v in range(n)}
+plot_df = pd.concat([opendb.data, hue_target], axis=1)
+
+sns.jointplot(
+    data = plot_df,
+    x = feat_1,
+    y = feat_2,
+    hue = "DEATH_EVENT",
+    kind = 'scatter', 
+    hue_order = hue_grant, #lol
+    palette=hue_dict,
+    s=50
+)
+for label, color in hue_dict.items():
+    sns.regplot(
+        data = plot_df.iloc[np.where(hue_target==label)[0], :],
+        x = feat_1, 
+        y = feat_2,
+        color=color,
+        label=label
+)
+plt.show()
+
 
