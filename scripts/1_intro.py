@@ -6,7 +6,7 @@ from matplotlib.patches import ConnectionPatch
 import seaborn as sns
 import support
 
-#%%[markdown]
+#%% [markdown]
 #
 ## Matplotlib! (Lecture 1)
 #
@@ -37,7 +37,7 @@ import support
 #
 # [**Look at this graph**](https://youtu.be/sz2mmM-kN1I?si=oy-Dl0wIc6fENHHa)
 #
-#%%[markdown]
+#%% [markdown]
 ## 1. Plan
 #
 # - HAVE A PLAN. Or at least some idea of what you want to make.  My go to
@@ -82,7 +82,7 @@ import support
 # 
 # Once you start thinking of the library in this way, everything starts to make sense. 
 #
-#%%[markdown]
+#%% [markdown]
 
 ## 2. Anatomy
 #
@@ -400,10 +400,9 @@ plt.show()
 # `fig, ax = plt.subplots(nrows=3,ncols=2,figsize=(10,8), height_ratios=[1, 3, 2])`
 #
 # So this time to access each of the grid items, we'll need to index the axis
-# like a numpy array of the same shape.  So if I wanto access the blood pressure
-# chart of the last graph, I would need to use `ax[2, 1]` to correctly reference
-# that main chart axes.
-#
+# like we would a numpy array `[row, col]`.  So if I want to access the blood
+# pressure chart of the last graph, I would need to use `ax[2, 1]` to correctly
+# reference that main chart axes.
 #
 
 #%%
