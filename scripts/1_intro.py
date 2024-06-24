@@ -83,7 +83,7 @@ import support
 #
 #%%[markdown]
 
-## Anatomy
+## 2. Anatomy
 #
 # Now within those `Axis'`, there's certain properties of the chart that we also
 # have access too.  Usually rooted in wherever that `Axis` the object resides,
@@ -108,7 +108,7 @@ import support
 # Each of these pairings exist in different levels of the chart, and the methods you have access to depend on where you are in that reference heirarchy. Which brings me to our next subject.
 #%%[markdown]
 
-### Figure Reference 
+### 3. Figure Reference 
 #
 #### lazy reference vs object oriented. 
 #
@@ -131,21 +131,32 @@ plt.show()
 # As you can see, that style of graphing is easy enough.  You can quickly build
 # up charts, but one thing you have to remember is that building charts with
 # `plt` as a reference is it `always references/ties you to the last chart
-# object you created.` So while you have access to both the `fig` and `ax`
-# objects / variables from the `plt.subplots` return, by referencing `plt` you
-# are referencing the `last chart that you built` which is the look at this
-# graph chart. This is maintainable for small scale charts, but as soon as 
+# object you created.` So in the code block above, you access to both the `fig`
+# and `ax` objects / variables from the `plt.subplots` return, but by
+# referencing `plt` when you're plotting are referencing the `last chart that
+# you built` which is the look at this graph chart. When you call plt, these are the actions
+# that happen in the background with matplotlib. 
 # 
-# ```you start layering items, you need a variable reference to them.```
+# ![plt call](https://realpython.com/cdn-cgi/image/width=753,format=auto/https://files.realpython.com/media/flow.a210eb81a42b.jpg)
 #
-# This is why `I highly suggest` you use `object oriented programming` to create
-# a proper reference to the item you wish to manipulate.  Ultimately, this gives
+# [RealPython - imagesource](https://files.realpython.com/media/flow.a210eb81a42b.jpg)
+#
+# So you can see with multiple plot calls or changes you'd like made, the
+# software gets increasingly overloaded and causes the software to hang, crap
+# out and eventually crash.  Which is the one thing we've all experienced using
+# this library.  But none of knew why.  Well.  Turns out this is a thing. So. In order to 
+# combat this...   
+# 
+# ```you need a variable reference to the thing you want to change```
+#
+# This is why *I highly suggest* you use `object oriented programming` to create
+# a solid reference to the item you wish to manipulate.  Ultimately, this gives
 # you more control over each chart object, and lowers the computational
 # requirement when matplotlib doesn't have to call mutiple methods to find
-# whatever the last object you referenced was.  
+# the last object you created. 
 # 
 # 
-### GRAPHS GRAPHS GRAPHS
+### 4. GRAPHS GRAPHS GRAPHS
 #
 # So for starters, lets begin with the suggested OO approach to creating a matplotlib chart. 
 #
@@ -158,10 +169,39 @@ plt.show()
 #   stack.
 # - `ax` -> which sits on top of fig, but is tied to it.  Meaning commands will
 #   cascade down to their intended object if referenced correctly
+# - `figsize` - Passed in as a tuple, but an easyway to control size. 
 #
-# Armed with that knowledge, we can now begin to assemble items in the manner we
-# want.  So for a starter graph, lets load up some UCI Heart Disease data and
-# take a first pass at a more advanced graph. 
+# If we go to the docs page of `plt.subplots`, we find some interesting inputs for us to 
+# choose from!  
+#
+# [subplots docs](https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.subplots.html)
+# 
+# Here are a few other parameters that will usually be important fast/easy chart creation.
+# 
+# - `nrows`, `ncols` - Num of rows and cols
+# - `sharex`, `sharey` - Self explanatory, but important to remember.  Say you
+#   wanted to change one x axis on a stack of graphs that share an X axis, but
+#   you can't because when you change one, it changes all the rest.  This is
+#   because they only have one x-Axis object that they are all tied too.  Little
+#   stuff like that pops up all the time in developing with matplotlib.  That's
+#   when its always a good idea to go to the docs, root aroud for the object
+#   you're trying to use, and see what methods you have available or where you
+#   went wrong.
+# - `height_ratios`, `width_ratios` - These control how much of a height
+#   difference and width difference with respect to each row / col of a plot
+#   layout. 
+# - `1ayout` - Set equal to "constrained". This automatically shifts legends and
+#   axis labels to fit within the grid of charts. But, the main way you should control the
+#   spacing of a grid of charts is with the following method. 
+# 
+# `plt.subplots_adjust(wspace=0.1, hspace = 0.7)` 
+# 
+# This will ultimately give you more control over how your chart will render and
+# not cause any weird errors with other objects that may have not been developed
+# with a contstrained layout in mind.  Armed with this knowledge, we can now
+# begin to assemble items in the manner we want.  So for a starter graph, lets
+# load up some `UCI Heart Disease data` and take a first pass at a more advanced
+# graph. 
 # 
 
 #%%
@@ -320,7 +360,7 @@ for ax in [ax1, ax2, ax3]:
         fontweight="bold",
         annotation_clip=False
     )
-
+#Set the main title of the main chart area
 plt.suptitle("Numerical Variable Exploration", size=20)
 plt.show()
 
