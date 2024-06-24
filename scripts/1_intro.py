@@ -336,7 +336,7 @@ for ax in [ax1, ax2, ax3]:
         # luck would have it, the right most variables are all on a binary
         # scale. So taking the floor division of 1 is zero  meaning the arrow
         # didn't render all the way to the midpoint.  
-        
+
     x_midA = sum(list(ax[0].get_xlim())) // 2
     y_midA = sum(list(ax[0].get_ylim())) // 2
     x_midB = sum(list(ax[1].get_xlim())) / 2
@@ -376,19 +376,19 @@ plt.show()
 
 #%%[markdown]
 # Now we can begin to see how matplotlib layers its references one on top of the
-# other in that object oriented style fashion.  The refernece to the object that
-# you want to change is just a matter of referencing it correctly in the object
+# other in that `object oriented` style fashion.  The reference to the object that
+# you want to change is just a matter of correctly selecting the object in the plot
 # stack.  Much like scraping websites for html tags!
 #
-# Being that I would be its taken us a little bit to get to this point. We'll do one more 
-# quick graph before the fiddleheads is through.  Or maybe we flew to this point and we have
-# plenty of time.  I have no real concept of it in these presentations!  Lol.  I digress. 
+# Being that its taken us a = bit to get to this point. We'll do one more quick
+# graph before the fiddleheads is through.  Or maybe we flew to this point and
+# we have plenty of time.  I have no real concept of it in these presentations!
+# Lol.  I digress. 
 #
-# I would like tos how you a few other ways to access subplots by way of
-# subplots(111), and using a row / col refence to which axis you're trying to
-# look at.  I woudln't rely on the former 3 single digit format method as its a
+# I would like to show you a few other ways to access subplots by way of
+# subplots(111), and using a `[row / col]` reference to which axis you're trying to
+# look at.  I wouldn't rely on the former 3 single digit format method as its a
 # bit outdated and gets very confusing.
-# 
 #
 # So.  Re-using our old code. If we changed the subplots call to something like. 
 # 
@@ -396,7 +396,7 @@ plt.show()
 #
 # So this time to access each of the grid items, we'll need to index the axis like a numpy
 # array of the same shape.  So if I wanto access the blood pressure chart of the last 
-# graph, I would need to use `ax[2, 1]` to correctly reference that axis
+# graph, I would need to use `ax[2, 1]` to correctly reference that chart axis.
 #
 #%%
 fig, ax = plt.subplots(
@@ -440,16 +440,19 @@ plt.show()
 # make something cool!  
 #
 # For our next plot, we're looking for a way to visualize something we all should have a 
-# saved script for.  The correlation heatmap!   <Que the gong>  
+# saved script for.  The correlation heatmap!   
+# 
+# **Que the gong**
 #
 # These are always a good idea in the early stages of exploration.  They're also amazingly 
-# easy to concoct with the help of `seaborns heatmap` method.  
+# easy to concoct with the help of `seaborns heatmap` method.  So check out how 
+# easy it is to make these with just a few lines of code.  
 # 
 
 #%%
 #
 #Make correlation Heatmap chart
-fig, ax = plt.subplots(figsize=(16, 12))
+fig, ax = plt.subplots(figsize=(12, 8))
 mask = np.triu(np.ones_like(opendb.data[numcols].corr(), dtype=bool))
 heatmap = sns.heatmap(
     data = opendb.data[numcols].corr(),
@@ -459,7 +462,7 @@ heatmap = sns.heatmap(
     vmax=1,
     annot=True, 
     annot_kws={
-        'fontsize':14,
+        'fontsize':12,
         'fontweight':'demibold'
     },
     xticklabels=numcols,
@@ -468,8 +471,8 @@ heatmap = sns.heatmap(
     cmap='RdYlGn') #'RdYlGn'
 
 heatmap.set_title('Correlation Heatmap', fontdict={'fontsize':32})
-plt.xticks(size=15, rotation=55)
-plt.yticks(size=15)
+plt.xticks(size=10, rotation=55)
+plt.yticks(size=10)
 plt.show()
 
 #%%[markdown]
@@ -485,11 +488,14 @@ plt.show()
 #   that have a correlation value. Then assign it to an array of one's
 #   `np.ones_like` that tell whether the data is present. By selecting only the
 #   upper half of the triangle of the array, we flip it down onto the bottom
-#   axis so it is easier to represent only that half of the data.  If we had
+#   axis so it is easier to represent only that  half of the data.  If we had
 #   used `np.tril` we would have an inverted version of the table and only the
 #   upper right side of the triangle would return.  Its a little confusing.. so
-#   here's a usage of `np.triu` in the mask variable.  
-#   ![mask](images\mask.png)
+#   here's a usage of `np.triu` in the mask variable.
+#%%
+print(mask)
+#%%[markdown]
+#
 # - `vmin`        - minimum value for range
 # - `vmax`        - maximum value for range
 # - `annot`       - Whether to set the annotations (bool)
