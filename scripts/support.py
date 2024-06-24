@@ -15,7 +15,7 @@ class OpenDB():
     data = pd.DataFrame
     data_description = str
     target_names = list,
-    features_names = list
+    feature_names = list
     rev_target_dict = dict
 
 def grab_dataset(dataset_id:int):

@@ -523,24 +523,61 @@ print(mask)
 
 #%%[markdown]
 
-#For our final chart of the evening.  This is one of my favorite seaborn charts
-#available. (Ok so maybe i use it more than a little, but none the less, its a
-#very powerful visualization.  Its called the jointplot and makes excellent
-#usage of otherwise useless margins tos how you the distribution for the
-#variable, with the scatter underneath. 
+# For our final chart of the evening.  This is one of my favorite seaborn charts
+# available. (Ok so maybe i use seaborn more than a little, but none the less,
+# its a very powerful visualization.  Its called the `jointplot` and makes
+# excellent usage of otherwise useless margins to show you the distribution for
+# the variable, with the scatter underneath. 
+#
+# [jointplot docs](https://seaborn.pydata.org/generated/seaborn.jointplot.html#)
+#
+# I know i've been harping at you so far about how you need a `fig, ax` variable
+# to control a plot.  But I use this specific example to illustrate how
+# some libraries operate in a different fashion that may have a desired output,
+# but not use the same call structure.  Even when seaborn is built off of base
+# matplotlib!!  For the `jointplot` themselves, you use the `lazy reference` and 
+# *cannot* assign a plot value to a chart axis. 
+# 
+# So its good to know both ways in some situations when those frameworks you're
+# used too may not be available.  As adding a linear regression plot to this
+# scatter, it shows you an important trend between these two target classes.
+# Namely how higher creatinine levels indicate worse kidney function and look to
+# only be in the deceased target class. association with those that passed away
+# in this dataset.  Higher the value, the worse filtration you see.  But, now
+# you can easily see the difference between the two groups and how part of this
+# lecture. 
+# 
+#
+# Stay tuned for the next lecture when we dive into 
+# two main area's for development.  VSCodes native `debugger` and the `Gridspec` object in 
+# `matplotlib`  
 
 #%%
 from matplotlib.pyplot import cm
 
+#Select features
 feat_1 = 'ejection_fraction'
 feat_2 = 'serum_creatinine'
+
+#Map the target variable to a str counterpart
 hue_target = opendb.target.map(opendb.rev_target_dict)
+
+#Sort thoes target variables by their dictionary index
 hue_grant  = sorted(opendb.rev_target_dict.items(), key=lambda x:x[0])
+
+#pull out the order 
 hue_grant = [x[1] for x in hue_grant]
+
+#How many colors do we need?
 n = len(hue_grant)
+#use seaborns color pallete to quickly generate a range of colors
 pal = sns.color_palette(palette="tab10", n_colors=n)
+
+#Map thoes colors to the target values
 hue_dict = {hue_grant[v]:pal[v] for v in range(n)}
-plot_df = pd.concat([opendb.data, hue_target], axis=1)
+
+#Marry the numeric data back to the target data
+plot_df = pd.concat([opendb.data[numcols], hue_target], axis=1)
 
 sns.jointplot(
     data = plot_df,
@@ -561,5 +598,6 @@ for label, color in hue_dict.items():
         label=label
 )
 plt.show()
+#%%
 
 
