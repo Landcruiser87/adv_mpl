@@ -63,35 +63,27 @@ def grab_dataset(dataset_id:int):
     #     }
     return OpenDB
 
-#old loader code
-    # if url.endswith(".zip"):
-    #     pass
-    # elif url.endswith(".csv"):
-    #     pass
-    # elif url.endswith(""):
-    # data = requests.get(url).content
-    # df = pd.read_csv(io.StringIO(data.decode('utf-8')))
-
 def sum_stats(datatype:str, title:str, data=pd.DataFrame):
     """Accepts a datatype you want to be summarized. 
     Manipulate the .agg function below to return your desired format.
 
     Args:
-        stat_list (str): List of feature names
-        title (str): What you want to call the plot
+        datatype (str): what type of data you want selected for the table
+        title (str): What you want to call the table
         data (pd.DataFrame) : The dataset you're working with
     """		
     #Add a rich table for results. 
     table = Table(title=title)
-    table.add_column("Measure Name", style="green", justify="right")
-    table.add_column("mean", style="sky_blue3", justify="center")
-    table.add_column("std", style="turquoise2", justify="center")
-    table.add_column("max", style="yellow", justify="center")
-    table.add_column("min", style="gold3", justify="center")
-    table.add_column("count", style="cyan", justify="center")
+    table.add_column("Idx", style="sky_blue3", justify="center")
+    table.add_column("Measure Name", style="green", justify="left")
+    table.add_column("Mean", style="sky_blue3", justify="center")
+    table.add_column("Std", style="turquoise2", justify="center")
+    table.add_column("Min", style="gold3", justify="center")
+    table.add_column("Max", style="yellow", justify="center")
+    table.add_column("Count", style="cyan", justify="center")
 
     #filter dataframe by types. 
-    #options 
+    #options from pandas docs
         # -To select all numeric types, use np.number or 'number'
         # -To select strings you must use the object dtype, but note that this will return all object dtype columns
         # -See the numpy dtype hierarchy
@@ -99,15 +91,18 @@ def sum_stats(datatype:str, title:str, data=pd.DataFrame):
         # -To select timedeltas, use np.timedelta64, 'timedelta' or 'timedelta64'
         # -To select Pandas categorical dtypes, use 'category'
         # -To select Pandas datetimetz dtypes, use 'datetimetz' or 'datetime64[ns, tz]'
+        
     datacols = data.select_dtypes(include=datatype)
+    colnames = data.columns.tolist()
     for col in datacols:
         _mean, _stddev, _max, _min, _count = data[col].agg([np.mean, np.std, max, min, "count"]).T
         table.add_row(
+            f"{colnames.index(col):d}",
             col,
-            f"{_mean:.2f}",
-            f"{_stddev:.2f}",
-            f"{_max:.2f}",
-            f"{_min:.2f}",
+            f"{_mean:.1f}",
+            f"{_stddev:.1f}",
+            f"{_min:.1f}",
+            f"{_max:.1f}",
             f"{_count:.0f}",
         )
     console = Console()

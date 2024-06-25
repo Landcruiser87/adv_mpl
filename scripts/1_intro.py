@@ -23,7 +23,7 @@ import support
 # RealPython_**](https://realpython.com/python-matplotlib-guide/). They write
 # excellent articles and guideline material for programming in python.  
 #
-# As an overview, our talk tonight will be sectioned into 3 main parts. 
+# As an overview, our talk tonight will be sectioned into 4 main parts. 
 #
 #### 1. Plan
 #### 2. Anatomy
@@ -56,7 +56,7 @@ import support
 #
 # - Use drawio or some other sketching tool to make an outline.  I use a VSCode
 #   extension by _Henning Dieterics_ called `Draw.io Integration`.  Its free and
-#   works wonderfuly for really complex flow chart layouts. Here is the ID for
+#   works wonderfully for really complex flow chart layouts. Here is the ID for
 #   it in the extensions marketplace. `hediet.vscode-drawio`
 # - Build each indvidual component (and its interactivity) piece by piece and
 #   layer them into one figure.  Just like *ggplot2*, *matplotlib* works in an
@@ -87,10 +87,10 @@ import support
 ## 2. Anatomy
 #
 # Now within those `Axis'`, there's certain properties of the chart that we also
-# have access too.  Usually rooted in wherever that `Axis` the object resides,
-# there's always a method to either access the current values. Or set them.
-# Remember to check the Axes method documentation for reference as it will
-# undoubtedly come in handy.
+# have access too.  Usually rooted in wherever that x or y `Axis` the object
+# resides, There's always a method to either access the current values. Or set
+# them.  In general, remember to check the `Axes` method documentation for reference as it will
+# undoubtedly come in handy. (The Axis objects are layered underneath)
 # [Documentation](https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html)
 #
 # For an excellent anatomy visualization of a plot. please refer to the image below. 
@@ -157,7 +157,7 @@ plt.show()
 # This is why *I highly suggest* you use `object oriented programming` to create
 # a solid reference to the item you wish to manipulate.  Ultimately, this gives
 # you more control over each chart object, and lowers the computational
-# requirement when matplotlib doesn't have to call mutiple methods to find the
+# requirement when matplotlib doesn't have to call multiple methods to find the
 # last object you created. 
 # 
 #%%[markdown]
@@ -170,15 +170,17 @@ plt.show()
 #
 # What this does is creates a plot with the flexibility to create different
 # layouts depending on what you need to display. You'll wind up with two return
-# variables from the `plt.subplots` call.  `fig` and `ax`
+# variables from the `plt.subplots` call.  `fig` and `ax`.  
 #
 # - `fig` -> which is the backbone of the plot and sits at the bottom of the
-#   stack.
-# - `ax` -> which sits on top of fig, but is tied to it.  Meaning commands will
-#   cascade down to their intended object if referenced correctly
+#   stack.  
+# - `ax` -> which sits on top of fig, but is tied to it. Meaning commands will
+#   cascade down to their intended object if referenced correctly. The returned
+#   `ax` object is the `Axes` object we were referring too earlier in our first
+#   plot. 
 #
-# If we go to the docs page of `plt.subplots`, we find some interesting inputs
-# for us to choose from!  
+# Now lets look at parameter inputs for subplots.  If we go to the docs page of
+# `plt.subplots`, we find some interesting inputs for us to choose from!  
 #
 # [subplots docs](https://matplotlib.org/stable/api/_as_gen/matplotlib.pyplot.subplots.html)
 # 
@@ -191,10 +193,10 @@ plt.show()
 #   you can't because when you change one, it changes all the rest.  This is
 #   because they only have one x-Axis object that they are all tied too.  Little
 #   stuff like that pops up all the time in developing with matplotlib.  That's
-#   when its always a good idea to go to the docs, root aroud for the object
+#   when its always a good idea to go to the docs, root around for the object
 #   you're trying to use, and see what methods you have available or where you
 #   went wrong.
-# - `figsize` - Passed in as a tuple, but an easyway to control size. 
+# - `figsize` - Passed in as a 2 element tuple.  Easy way to control size. 
 # - `height_ratios`, `width_ratios` - These control how much of a height
 #   difference and width difference with respect to each row / col of a plot
 #   layout. 
@@ -206,7 +208,7 @@ plt.show()
 # 
 # This will ultimately give you more control over how your chart will render and
 # not cause any weird errors with other objects that may have not been developed
-# with a contstrained layout in mind.  Armed with this knowledge, we can now
+# with a constrained layout in mind.  Armed with this knowledge, we can now
 # begin to assemble items in the manner we want.  So for a starter graph, lets
 # load up some `UCI Heart Disease data` and take a first pass at a more advanced
 # graph. 
@@ -232,7 +234,7 @@ opendb = support.grab_dataset(43008)
 numcols = opendb.data.select_dtypes("number").columns.tolist()
 
 # Grab the units from the description. Index a newline split from 13 to the 3rd
-# charater.(all the rows with variables)
+# from the last row.  (all the rows with variables)
 raw_units = opendb.data_description.split("\n")[13:-3]
 
 #Extract the units from the dataset description
@@ -255,12 +257,27 @@ for col in numcols:
     ax.set_xlabel(f"{col} ({units[col]})")
     plt.show()
 
-#Look at columns
-opendb.data.columns.to_list()
-#number or object
-
+#Make a stats table to view stuffs!
 support.sum_stats("number", "Numeric Variable Summary", opendb.data)
 
+# As a sidenote, sometimes you just want to look at the columns and their indexes.
+# Here's a handy function for that. 
+def view_allcols(df:pd.DataFrame)->list:
+    """Here we make a list of a zipped object.  The contents being a range numbering the 
+    amount of columns and the column names. 
+
+    Args:
+        df (pd.DataFrame): el dataframe
+
+    Returns:
+        header (list of tuples): [(column index, column name)]
+    """
+    header = [("col_idx", "col_name")]
+    header.extend(list(zip(range(df.shape[1]),df.columns.tolist())))
+    return header
+
+cols = view_allcols(opendb.data)
+cols
 
 #%%[markdown]
 
@@ -339,20 +356,21 @@ for ax in [ax1, ax2, ax3]:
     ax[1].set_title(f"ax[1]")
     ax[1].legend(loc="lower left")
     idx += 1
-    #Next I want to draw an arrow from the middle of the left chart to to the
-    #middle of the right chart.  Normally I could use matplotlibs Arrow or
-    #FancyArrow object for this, but matplotlib has a dedicated function for
-    #this called ConnectionPatch.  So we'll use that. 
-    #Thought process below on how to draw the arrows.
-    # Calculate the midpoint of each pair of side by side graphs. Do so by
-    #accessing the get_xlim, and get_ylim methods, and creating coordinates to
+    # Next I want to draw an arrow from the middle of the left chart to to the
+    # middle of the right chart.  Normally I could use matplotlibs Arrow or
+    # FancyArrow object for this, but matplotlib has a dedicated function for
+    # using objects that may span across two or more axes (charts) This is called
+    # the ConnectionPatch.  So we'll use that. 
+    # Thought process below on how to draw the arrows.
+    # Calculate the midpoint (avg) of each pair of side by side graphs. Do so by
+    # accessing the get_xlim, and get_ylim methods, and creating coordinates to
     # the middle of each plot for the arrow to reference. the coordsA and
     # coordsB parameters for the ConnectionPatch object handle the
     # transformation between the two ranges.
     # Note:
         # I only took the floor divisions for the first two variables because as
         # luck would have it, the right most variables are all on a binary
-        # scale. So taking the floor division of 1 is zero  meaning the arrow
+        # scale. So taking the floor division of 1 is zero meaning the arrow
         # didn't render all the way to the midpoint.  
 
     x_midA = sum(list(ax[0].get_xlim())) // 2
@@ -406,16 +424,37 @@ plt.show()
 # I would like to show you a few other ways to access subplots by way of
 # subplots(111), and using a `[row / col]` reference to which axis you're trying
 # to look at.  I wouldn't rely on the former 3 single digit format method as its
-# a bit outdated and gets very confusing.
+# a bit outdated and gets very confusing.  But for those that would like to use it.  
+# it is structured as such. 
+# `fig, ax = plt.subplots(322)`
 #
-# So.  Re-using our old code. If we changed the subplots call to something like. 
+# 1. First number is the number of rows, 
+# 2. Second number is the number of columns,
+# 3. 3rd is the index of the subplot
+#
+# In the example code, above, we'd be creating a 3 row, 2 column chart that
+# would reference the 2nd indexed subplot.  Which in our case would be the
+# `anemia` plot. One thing to remember is that the *index* for any subplots
+# *starts in the upper left corner* and increases to the right.  So to label
+# those plots in our current graph in array form, the indexes would like this
+#
+# | 1, 2 |
+#
+# | 3, 4 |
+#
+# | 5, 6 |
+#
+# You can go this route if you like, but not everyone knows that nomenclature
+# for subplots so it might just be easier to define the variable inputs for
+# readability.  I've found this to be better for anyone else who's reading your
+# code. With that.. We'll call a fig, ax with all the inputs detailed for us. 
 # 
 # `fig, ax = plt.subplots(nrows=3,ncols=2,figsize=(10,8), height_ratios=[1, 3, 2])`
 #
-# So this time to access each of the grid items, we'll need to index the axis
-# like we would a numpy array `[row, col]`.  So if I want to access the blood
-# pressure chart of the last graph, I would need to use `ax[2, 1]` to correctly
-# reference that main chart axes.
+# This time to access each of the subplots, we'll need to index the axis like we
+# would a numpy array `[row, col]`.  So if I want to access the `blood pressure`
+# chart of the last graph, I would need to use `ax[2, 1]` to correctly reference
+# that main chart axes.
 #
 
 #%%
@@ -465,10 +504,9 @@ plt.show()
 # 
 # **Que the gong**
 #
-# These are always a good idea in the early stages of exploration.  They're also
+# These are always a good idea in the early stages of EDA.  They're also
 # amazingly easy to concoct with the help of `seaborns heatmap` method.  So
 # check out how easy it is to make these with just a few lines of code.  
-# 
 
 #%%
 # For reference.  numcols var we created earlier
@@ -525,7 +563,7 @@ print(mask)
 # - `annot_kws`   - Sub arguments for font control (dict)
 # - `xticklabels` - labels for the x axis
 # - `yticklabels` - labels for the y axis
-# - `fmt`         - What format you want the corrrelation values
+# - `fmt`         - What format you want the correlation values
 # - `cmap`        - Color map you'd like to use to show min to max color shading
 #
 #
@@ -542,8 +580,8 @@ print(mask)
 #%%[markdown]
 
 # For our final chart of the evening.  This is one of my favorite seaborn charts
-# available. (Ok so maybe i use seaborn more than a little, but none the less,
-# its a very powerful visualization.  Its called the `jointplot` and makes
+# available. (Ok so maybe i use seaborn more than a little) but none the less,
+# it's a very powerful visualization.  Its called the `jointplot` and makes
 # excellent usage of otherwise useless margins to show you the distribution for
 # the variable, with the scatter underneath. 
 #
@@ -551,19 +589,23 @@ print(mask)
 #
 # I know i've been harping at you so far about how you need a `fig, ax` variable
 # to control a plot.  But I use this specific example to illustrate how some
-# libraries  may have a desired output, but not use the same call structure.
-# Even when seaborn is built off of base matplotlib!!  For the `jointplot`
-# themselves, you use the `lazy reference` and *cannot* assign a plot to a
-# chart axis. Which is weird, but because the `jointplot` is fairly specialized, 
-# they took that option away to make it easier to generate. 
+# libraries may have a desired output, but not use the same coding structure.
+# Even with seaborn being built off of base matplotlib!!  What i mean by this,
+# is using wrapper libraries like seaborn will sometimes abstract away some of
+# the utilities of a simpler more straightforward/customizable library like
+# matplotlib. For example
 # 
-#
-# So its good to know both ways in some situations when those frameworks you're
-# used too may not be available.  As adding a linear regression plot to this
-# scatter, it shows you an important trend between these two target classes.
-# Namely how higher creatinine levels indicate worse kidney function and look to
-# more associated with death in the target class. Higher the value, the worse
-# filtration you see. 
+# With a `jointplot`, you use the `lazy reference` (plt) and *cannot* assign a
+# plot to a chart axis. Which is weird, but because the `jointplot` is fairly
+# specialized, they took the option to assign it to an axis away. Because of all
+# the extra goodies, they've stuffed in the margins to give us distribution.
+# Those extra's won't play nicely with other objects. So its good to know both
+# ways in some situations when those frameworks you're used too may not be
+# available.  As adding a linear regression plot to this scatter, it shows you
+# an important trend between these two target classes. Namely how higher
+# creatinine levels indicate worse kidney function and look to more associated
+# with death in the target class. Higher the value, the worse filtration you
+# see. 
 # 
 #
 # Stay tuned for the next lecture when we dive into two main area's for
@@ -581,18 +623,18 @@ feat_2 = 'serum_creatinine'
 hue_target = opendb.target.map(opendb.rev_target_dict)
 
 #Sort thoes target variables by their dictionary index
-hue_grant  = sorted(opendb.rev_target_dict.items(), key=lambda x:x[0])
+hue_ord  = sorted(opendb.rev_target_dict.items(), key=lambda x:x[0])
 
 #pull out the order 
-hue_grant = [x[1] for x in hue_grant]
+hue_ord = [x[1] for x in hue_ord]
 
 #How many colors do we need?
-n = len(hue_grant)
+n = len(hue_ord)
 #use seaborns color pallete to quickly generate a range of colors
 pal = sns.color_palette(palette="tab10", n_colors=n)
 
 #Map thoes colors to the target values
-hue_dict = {hue_grant[v]:pal[v] for v in range(n)}
+hue_dict = {hue_ord[v]:pal[v] for v in range(n)}
 
 #Marry the numeric data back to the target data
 plot_df = pd.concat([opendb.data[numcols], hue_target], axis=1)
@@ -603,7 +645,7 @@ sns.jointplot(
     y = feat_2,
     hue = "DEATH_EVENT",
     kind = 'scatter', 
-    hue_order = hue_grant, #lol
+    hue_order = hue_ord, 
     palette=hue_dict,
     s=50
 )
