@@ -13,7 +13,9 @@ import support
 #### The only graphing library you'll ever need.
 #### By: Andy Heroy (6/25/24)
 # 
-
+# **__Explain file format__**
+#
+#
 # Given its age and maturity.  Matplotlib has been around for quite some time
 # and provides over 70k lines of code supporting almost any graphing initiative
 # that you may have and / or want to explore.  Its incredibly dense
@@ -22,6 +24,8 @@ import support
 # subjects / images from this talk come from this reference on [**_MPL Guide
 # RealPython_**](https://realpython.com/python-matplotlib-guide/). They write
 # excellent articles and guideline material for programming in python.  
+#
+#
 #
 # As an overview, our talk tonight will be sectioned into 4 main parts. 
 #
@@ -628,14 +632,15 @@ feat_2 = 'serum_creatinine'
 #Map the target variable to a str counterpart
 hue_target = opendb.target.map(opendb.rev_target_dict)
 
-#Sort thoes target variables by their dictionary index
+#Sort those target variables by their dictionary index
 hue_ord  = sorted(opendb.rev_target_dict.items(), key=lambda x:x[0])
 
-#pull out the order 
+#pull out the names in order 
 hue_ord = [x[1] for x in hue_ord]
 
 #How many colors do we need?
 n = len(hue_ord)
+
 #use seaborns color pallete to quickly generate a range of colors
 pal = sns.color_palette(palette="tab10", n_colors=n)
 
@@ -662,7 +667,7 @@ for label, color in hue_dict.items():
         y = feat_2,
         color=color,
         label=label
-)
+)   
 plt.show()
 #%%[markdown]
 #

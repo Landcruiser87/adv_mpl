@@ -1,5 +1,5 @@
 <h1 align="center">
-  <b>Advanced Matplotlib Techniques</b><br>
+  <b>Advanced Matplotlib</b><br>
 </h1>
 
 <p align="center">
@@ -29,8 +29,18 @@ On Mac
 $ source .mp_venv/bin/activate
 ```
 
-Before next step, ensure you see the environment name to the left 
-of your command prompt.  If you see it and the path file to your current directory, then the environment is activated.   If you don't activate it, and start installing things.  You'll install all the `requirements.txt` libraries into your `base python environment.` Which will lead to dependency problems down the road.  I promise. After that has been activated, go to your terminal and type `pip list` to check your base python libraries.  Now is probably a good time to copy whatever upgrade command you have for upgrading that version of pip. (Good practice) 
+Before next step, ensure you see the environment name to the left of your
+command prompt.  If you see it and the path file to your current directory, then
+the environment is activated.   If you don't activate it, and start installing
+things.  You'll install all the `requirements.txt` libraries into your `base
+python environment.` Which will lead to dependency problems down the road.  I
+promise. After that has been activated, go to your terminal and type `pip list`
+to check your base python libraries.  Now is a good time to upgrade pip and
+setuptools. As those should be the only two libraries you see on a clean python
+installation.  If not...  well.
+
+![Screenshot 2023-03-28 144052](https://user-images.githubusercontent.com/16505709/228358535-3364e0ea-b273-40b8-ab59-4dddf2f92ee2.png)
+
 
 Next install the required libraries with the below pip command!
 
