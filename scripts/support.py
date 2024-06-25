@@ -72,6 +72,16 @@ def sum_stats(datatype:str, title:str, data=pd.DataFrame):
         title (str): What you want to call the table
         data (pd.DataFrame) : The dataset you're working with
     """		
+    #filter dataframe by types. 
+    #options from pandas docs
+        # -To select all numeric types, use np.number or 'number'
+        # -To select strings you must use the object dtype, but note that this will return all object dtype columns
+        # -See the numpy dtype hierarchy
+        # -To select datetimes, use np.datetime64, 'datetime' or 'datetime64'
+        # -To select timedeltas, use np.timedelta64, 'timedelta' or 'timedelta64'
+        # -To select Pandas categorical dtypes, use 'category'
+        # -To select Pandas datetimetz dtypes, use 'datetimetz' or 'datetime64[ns, tz]'
+
     #Add a rich table for results. 
     table = Table(title=title)
     table.add_column("Idx", style="sky_blue3", justify="center")
@@ -82,15 +92,7 @@ def sum_stats(datatype:str, title:str, data=pd.DataFrame):
     table.add_column("Max", style="yellow", justify="center")
     table.add_column("Count", style="cyan", justify="center")
 
-    #filter dataframe by types. 
-    #options from pandas docs
-        # -To select all numeric types, use np.number or 'number'
-        # -To select strings you must use the object dtype, but note that this will return all object dtype columns
-        # -See the numpy dtype hierarchy
-        # -To select datetimes, use np.datetime64, 'datetime' or 'datetime64'
-        # -To select timedeltas, use np.timedelta64, 'timedelta' or 'timedelta64'
-        # -To select Pandas categorical dtypes, use 'category'
-        # -To select Pandas datetimetz dtypes, use 'datetimetz' or 'datetime64[ns, tz]'
+
         
     datacols = data.select_dtypes(include=datatype)
     colnames = data.columns.tolist()
