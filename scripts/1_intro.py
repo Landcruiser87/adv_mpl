@@ -89,7 +89,7 @@ import support
 # have access too.  Usually rooted in wherever that x or y `Axis` the object
 # resides, There's always a method to either access the current values. Or set
 # them.  In general, remember to check the `Axes` method documentation for reference as it will
-# undoubtedly come in handy. (The Axis objects are layered underneath)
+# undoubtedly come in handy. (The Axis objects are layered on top of the Axes chart)
 # [Documentation](https://matplotlib.org/stable/api/_as_gen/matplotlib.axes.Axes.html)
 #
 # For an excellent anatomy visualization of a plot. please refer to the image below. 
@@ -421,27 +421,30 @@ plt.show()
 # presentations! Lol.  I digress.
 # 
 # I would like to show you a few other ways to access subplots by way of
-# subplots(111), and using a `[row / col]` reference to which axis you're trying
-# to look at.  I wouldn't rely on the former 3 single digit format method as its
-# a bit outdated and gets very confusing.  But for those that would like to use it.  
-# it is structured as such. 
+# `subplots(111)`, and using a `[row / col]` reference to which axis you're
+# trying to select.  I wouldn't rely on the former 3 single digit format method
+# as its a bit outdated and has reduced readability.  But for those that would
+# like to use it, it is structured as such. 
+#
 # `fig, ax = plt.subplots(322)`
 #
-# 1. First number is the number of rows, 
-# 2. Second number is the number of columns,
-# 3. 3rd is the index of the subplot
+# 1. First number  (3) is the number of rows, 
+# 2. Second number (2) is the number of columns,
+# 3. The 3rd number(2) is the index of the subplot
 #
 # In the example code, above, we'd be creating a 3 row, 2 column chart that
 # would reference the 2nd indexed subplot.  Which in our case would be the
 # `anemia` plot. One thing to remember is that the *index* for any subplots
 # *starts in the upper left corner* and increases to the right.  So to label
-# those plots in our current graph in array form, the indexes would like this
-#
-# | 1, 2 |
-#
-# | 3, 4 |
-#
-# | 5, 6 |
+# those plots with the `subplots(322)` method, the indexes would like this
+# 
+# | | col 1 | col 2 |
+# | --- |  :----: | :----: |
+# |row 1| 0 | 1 |
+# |row 2| 2 | 3 |
+# |row 3| 4 | 5 |
+# 
+# 
 #
 # You can go this route if you like, but not everyone knows that nomenclature
 # for subplots so it might just be easier to define the variable inputs for
@@ -453,7 +456,13 @@ plt.show()
 # This time to access each of the subplots, we'll need to index the axis like we
 # would a numpy array `[row, col]`.  So if I want to access the `blood pressure`
 # chart of the last graph, I would need to use `ax[2, 1]` to correctly reference
-# that main chart axes.
+# that main chart axes. An example of referencing each chart is below
+#
+# | | col 1 | col 2 |
+# | --- |  :----: | :----: |
+# |row 1| (0, 0) | (0, 1) |
+# |row 2| (1, 0) | (1, 1) |
+# |row 3| (2, 0) | (2, 1) |
 #
 
 #%%
