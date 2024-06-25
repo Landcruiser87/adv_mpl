@@ -658,6 +658,7 @@ for label, color in hue_dict.items():
         label=label
 )
 plt.show()
+#%%[markdown]
+# ![Thank you!!](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYjVheGptd2Jtd2k2M2NjMTh0cXM4bGo0bHpybHY3aWUybTBkYXEzOCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/xdMXeiY2iCfSQ6faTk/giphy.gif)
+
 #%%
-
-
