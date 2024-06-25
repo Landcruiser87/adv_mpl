@@ -36,8 +36,6 @@ import support
 # scientist.  
 # 
 # [**Look at this graph**](https://youtu.be/sz2mmM-kN1I?si=oy-Dl0wIc6fENHHa) 
-#
-# <iframe width="560" height="315" src="https://www.youtube.com/embed/sz2mmM-kN1I?si=hNL5GvWTX-RaKDx4" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
 #%%[markdown]
 ## 1. Plan
 #
