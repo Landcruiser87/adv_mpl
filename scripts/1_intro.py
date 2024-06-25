@@ -613,7 +613,7 @@ print(mask)
 # `matplotlib`  
 
 #%%
-from matplotlib.pyplot import cm
+# from matplotlib.pyplot import cm #The way to import matplotlibs colormaps
 
 #Select features
 feat_1 = 'ejection_fraction'
