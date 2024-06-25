@@ -175,7 +175,7 @@ plt.show()
 #   stack.  
 # - `ax` -> which sits on top of fig, but is tied to it. Meaning commands will
 #   cascade down to their intended object if referenced correctly. The returned
-#   `ax` object is the `Axes` object we were referring too earlier in our first
+#   `ax` object is the `Axes` chart object we referenced  earlier in our first
 #   plot. 
 #
 # Now lets look at parameter inputs for subplots.  If we go to the docs page of
@@ -281,7 +281,7 @@ cols
 #%%[markdown]
 
 # That's a nice way to loop individual columns to take a look at histograms.
-# What if we tried to put it all the same plot? How would i reference each axis
+# What if we tried to put it all the same plot? How would I reference each axis
 # then? Luckily, matplotlib has an intelligent way it maps out how each axis is
 # controlled. There's a few different ways to reference them.
 #
@@ -438,6 +438,7 @@ plt.show()
 # *starts in the upper left corner* and increases to the right.  So to label
 # those plots with the `subplots(322)` method, the indexes would like this
 # 
+#
 # | | col 1 | col 2 |
 # | --- |  :----: | :----: |
 # |row 1| 0 | 1 |
@@ -579,7 +580,7 @@ print(mask)
 # Here is where you would go to find those!   Either Seaborns colormaps, or
 # matplotlibs colormaps.  They're quite similar so I usually just use
 # matplotlibs colormaps. (As we all remember that seaborn is built on top of
-# MPL)
+# matplotlib)
 #
 # [MPL color map references](https://matplotlib.org/stable/gallery/color/colormap_reference.html)
 # 
@@ -591,7 +592,9 @@ print(mask)
 # available. (Ok so maybe i use seaborn more than a little) but none the less,
 # it's a very powerful visualization.  Its called the `jointplot` and makes
 # excellent usage of otherwise useless margins to show you the distribution for
-# the variable, with the scatter underneath. 
+# the variable, with the scatter underneath.  As a bonus, you can throw a
+# `regplot` on top of the scatter to show a linear regression with confidence
+# intervals. (Usually pretty useful)
 #
 # [jointplot docs](https://seaborn.pydata.org/generated/seaborn.jointplot.html#)
 #
@@ -609,16 +612,11 @@ print(mask)
 # the extra goodies, they've stuffed in the margins to give us distribution.
 # Those extra's won't play nicely with other objects. So its good to know both
 # ways in some situations when those frameworks you're used too may not be
-# available.  As adding a linear regression plot to this scatter, it shows you
-# an important trend between these two target classes. Namely how higher
-# creatinine levels indicate worse kidney function and look to more associated
-# with death in the target class. Higher the value, the worse filtration you
-# see. 
-# 
+# available.  As the linear regression above, it shows you an important trend
+# between these two target classes. Namely how higher creatinine levels indicate
+# worse kidney function and look to more associated with death in the target
+# class. Higher the creatinine value, the worse kidney filtration.
 #
-# Stay tuned for the next lecture when we dive into two main area's for
-# development.  VSCodes native `debugger` and the `Gridspec` object in
-# `matplotlib`  
 
 #%%
 # from matplotlib.pyplot import cm #The way to import matplotlibs colormaps
@@ -667,8 +665,15 @@ for label, color in hue_dict.items():
 )
 plt.show()
 #%%[markdown]
+#
+# Stay tuned for the next lecture when we dive into two main area's for
+# development.  VSCodes native `debugger` and the `Gridspec` object in
+# `matplotlib`  
+#
 # ![Thank you!!](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYjVheGptd2Jtd2k2M2NjMTh0cXM4bGo0bHpybHY3aWUybTBkYXEzOCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/xdMXeiY2iCfSQ6faTk/giphy.gif)
 #
 # ![Thank you!](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExb2JjNDlnNXdwMWRnYTMwZjI5anV4cHgxaTZzdGM1ZWZ1dHU0a3VtaiZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/KJ1f5iTl4Oo7u/giphy.gif)
+#
+
 
 #%%
