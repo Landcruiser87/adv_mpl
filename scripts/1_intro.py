@@ -5,6 +5,8 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import ConnectionPatch
 import seaborn as sns
 import support
+from rich import inspect
+
 
 #%%[markdown]
 #
@@ -13,7 +15,7 @@ import support
 #### The only graphing library you'll ever need.
 #### By: Andy Heroy (6/25/24)
 # 
-# **__Explain file format__**
+# **__Explain file format__**  
 #
 #
 # Given its age and maturity.  Matplotlib has been around for quite some time
@@ -233,6 +235,7 @@ plt.show()
 
 opendb = support.grab_dataset(43008)
 
+inspect(opendb)
 #Select numeric columns
 numcols = opendb.data.select_dtypes("number").columns.tolist()
 
