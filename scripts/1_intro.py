@@ -100,9 +100,9 @@ from rich import inspect
 #
 # For an excellent anatomy visualization of a plot. please refer to the image below. 
 #
-# ![Anatomy](https://realpython.com/cdn-cgi/image/width=500,format=auto/https://files.realpython.com/media/anatomy.7d033ebbfbc8.png)
+# ![Anatomy](https://matplotlib.org/stable/_images/sphx_glr_anatomy_001.png)
 #
-# [RealPython - imagesource](https://realpython.com/cdn-cgi/image/width=500,format=auto/https://files.realpython.com/media/anatomy.7d033ebbfbc8.png)
+# [Matplotlib - imagesource](https://matplotlib.org/stable/gallery/showcase/anatomy.html)
 #
 # As illustrated in the plot, you can see various objects that are layered on
 # top and tied to each axis object.  For example. 
