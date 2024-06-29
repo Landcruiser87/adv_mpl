@@ -1,13 +1,12 @@
 import requests
 import numpy as np
 import pandas as pd
-import io
 from sklearn import datasets
 import rich
 from rich.console import Console
 from rich.table import Table
 from dataclasses import dataclass
-
+from datetime import timedelta
 
 @dataclass
 class OpenDB():
@@ -44,8 +43,9 @@ def grab_dataset(dataset_id:int):
             0:"living",
             1:"deceased"
         }
-    elif dataset_id == 45103:
-        OpenDB.target = dataset["target"]
+
+    elif dataset_id == 43482:
+        OpenDB.target = ""
         OpenDB.data = dataset["data"]
         OpenDB.data_description = dataset['DESCR']
 
@@ -56,10 +56,96 @@ def grab_dataset(dataset_id:int):
         if 'feature_names' in dataset.keys():
             OpenDB.feature_names = dataset['feature_names']
         
-        OpenDB.rev_target_dict = {}
+        OpenDB.country_codes = {
+            'DEU': 'Germany',
+            'USA': 'United States',
+            'AUS': 'Australia',
+            'GBR': 'United Kingdom',
+            'NZL': 'New Zealand',
+            'CHE': 'Switzerland',
+            'BEL': 'Belgium',
+            'AUT': 'Austria',
+            'DNK': 'Denmark',
+            'FRA': 'France',
+            'CAN': 'Canada',
+            'UKR': 'Ukraine',
+            'SVN': 'Slovenia',
+            'ARG': 'Argentina',
+            'ZAF': 'South Africa',
+            'ESP': 'Spain',
+            'PRT': 'Portugal',
+            'BRA': 'Brazil',
+            'KAZ': 'Kazakhstan',
+            'MEX': 'Mexico',
+            'ITA': 'Italy',
+            'NLD': 'Netherlands',
+            'FIN': 'Finland',
+            'LUX': 'Luxembourg',
+            'SWE': 'Sweden',
+            'CHN': 'China',
+            'COL': 'Colombia',
+            'CZE': 'Czech Republic',
+            'RUS': 'Russia',
+            'PRY': 'Paraguay',
+            'GRC': 'Greece',
+            'HUN': 'Hungary',
+            'NOR': 'Norway',
+            'PER': 'Peru',
+            'KOR': 'South Korea',
+            'IRL': 'Ireland',
+            'CRI': 'Costa Rica',
+            'EST': 'Estonia',
+            'JPN': 'Japan',
+            'ROU': 'Romania',
+            'ISR': 'Israel',
+            'VEN': 'Venezuela',
+            'PAN': 'Panama',
+            'SVK': 'Slovakia',
+            'POL': 'Poland',
+            'CHL': 'Chile',
+            'ISL': 'Iceland',
+            'AND': 'Andorra',
+            'GTM': 'Guatemala',
+            'HKG': 'Hong Kong',
+            'IND': 'India',
+            'TUR': 'Turkey',
+            'PHL': 'Philippines',
+            'SRB': 'Serbia',
+            'URY': 'Uruguay',
+            'ECU': 'Ecuador',
+            'SGP': 'Singapore',
+            'BMU': 'Bermuda',
+            'LVA': 'Latvia',
+            'TWN': 'Taiwan',
+            'MCO': 'Monaco',
+            'THA': 'Thailand',
+            'PNG': 'Papua New Guinea',
+            'MYS': 'Malaysia',
+            'HRV': 'Croatia',
+            'PRI': 'Puerto Rico',
+            'MAR': 'Morocco',
+            'LBN': 'Lebanon',
+            'IMN': 'Isle of Man',
+            'SAU': 'Saudi Arabia',
+            'DOM': 'Dominican Republic',
+            'VNM': 'Vietnam',
+            'BGR': 'Bulgaria'
+        }
+
 
 
     return OpenDB
+
+
+def time_convert(wrk_time:str)->timedelta:
+    if wrk_time[0].isnumeric and wrk_time[-1].isnumeric():
+        times = wrk_time.split(":")
+        hour = times[0]
+        min = times[1]
+        sec = times[2]
+        return timedelta(hours=hour, minutes=min, seconds=sec)
+    else:
+        return np.nan
 
 def sum_stats(datatype:str, title:str, data=pd.DataFrame):
     """Accepts a datatype you want to be summarized. 
@@ -107,7 +193,7 @@ def sum_stats(datatype:str, title:str, data=pd.DataFrame):
         )
     console = Console()
     console.print(table)
-    
+
 def view_allcols(df:pd.DataFrame)->list:
     """Here we make a list of a zipped object.  The contents being a range numbering the 
     amount of columns and the column names. 
