@@ -44,23 +44,21 @@ def grab_dataset(dataset_id:int):
             0:"living",
             1:"deceased"
         }
-    # elif dataset_id == 45948:
-    #     #If its the electric cars oneone.  Clean and load as such. 
-    #     OpenDB.target = dataset["data"]["DEATH_EVENT"]
-    #     OpenDB.data = dataset["data"].drop("DEATH_EVENT", axis=1) 
-    #     OpenDB.data_description = dataset['DESCR']
+    elif dataset_id == 45103:
+        OpenDB.target = dataset["target"]
+        OpenDB.data = dataset["data"]
+        OpenDB.data_description = dataset['DESCR']
 
-    #     if 'target_names' in dataset.keys():
-    #         if isinstance(dataset["target_names"], list):
-    #             OpenDB.target_names = np.array(["living", "deceased"], dtype="U9")
+        if 'target_names' in dataset.keys():
+            if isinstance(dataset["target_names"], list):
+                OpenDB.target_names = dataset["target_names"]
 
-    #     if 'feature_names' in dataset.keys():
-    #         OpenDB.feature_names = list(dataset['feature_names'])
+        if 'feature_names' in dataset.keys():
+            OpenDB.feature_names = dataset['feature_names']
         
-    #     OpenDB.rev_target_dict = {
-    #         0:"living",
-    #         1:"deceased"
-    #     }
+        OpenDB.rev_target_dict = {}
+
+
     return OpenDB
 
 def sum_stats(datatype:str, title:str, data=pd.DataFrame):
@@ -109,3 +107,17 @@ def sum_stats(datatype:str, title:str, data=pd.DataFrame):
         )
     console = Console()
     console.print(table)
+    
+def view_allcols(df:pd.DataFrame)->list:
+    """Here we make a list of a zipped object.  The contents being a range numbering the 
+    amount of columns and the column names. 
+
+    Args:
+        df (pd.DataFrame): el dataframe
+
+    Returns:
+        header (list of tuples): [(column index, column name)]
+    """
+    header = [("col_idx", "col_name")]
+    header.extend(list(zip(range(df.shape[1]),df.columns.tolist())))
+    return header
