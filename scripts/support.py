@@ -55,7 +55,23 @@ def grab_dataset(dataset_id:int):
 
         if 'feature_names' in dataset.keys():
             OpenDB.feature_names = dataset['feature_names']
+
+        #Data Cleaning        
+        #transform  times into timedelta's
+        time_cols = ["Swim", "Bike", "Run", "T1", "T2", "Overall"]
+        for col in time_cols:
+            OpenDB.data[col] = OpenDB.data[col].astype("timedelta64[s]")
+            OpenDB.data[col] = OpenDB.data[col].apply(lambda x:x.total_seconds())
+
+        text_cols = ["Name", "Country", "Gender", "Division", "Division_Rank", "Gender_Rank", "Overall_Rank"]
+        for col in text_cols:
+            OpenDB.data[col] = OpenDB.data[col].astype("str")
         
+        #replace DNFs with np.nans and flip the dtype to int so we can sort. 
+        # for col in text_cols[4:]:
+        #     OpenDB.data[(OpenDB.data[col]=="DNS") | (OpenDB.data[col]=="DNF") | (OpenDB.data[col]=="DQ")] = np.nan
+        #     OpenDB.data[col] = OpenDB.data[col].astype("float")
+
         OpenDB.country_codes = {
             'DEU': 'Germany',
             'USA': 'United States',
@@ -132,8 +148,6 @@ def grab_dataset(dataset_id:int):
             'BGR': 'Bulgaria'
         }
 
-
-
     return OpenDB
 
 
@@ -146,6 +160,23 @@ def time_convert(wrk_time:str)->timedelta:
         return timedelta(hours=hour, minutes=min, seconds=sec)
     else:
         return np.nan
+
+def view_allcols(df:pd.DataFrame)->list:
+    """Here we make a list of a zipped object.  The contents being a range numbering the 
+    amount of columns and the column names. 
+
+    Args:
+        df (pd.DataFrame): el dataframe
+
+    Returns:
+        header (list of tuples): [(column index, column name)]
+    """
+
+    header = [("col_idx", "col_name", "dtype")]
+    header.extend(list(zip(range(df.shape[1]),df.columns.tolist(), df.dtypes)))
+    header = [f"{str(idx):8s} {name:14s} {str(dtype):12s}" for idx, name, dtype in header]
+    for row in header:
+        print(row)
 
 def sum_stats(datatype:str, title:str, data=pd.DataFrame):
     """Accepts a datatype you want to be summarized. 
@@ -193,17 +224,3 @@ def sum_stats(datatype:str, title:str, data=pd.DataFrame):
         )
     console = Console()
     console.print(table)
-
-def view_allcols(df:pd.DataFrame)->list:
-    """Here we make a list of a zipped object.  The contents being a range numbering the 
-    amount of columns and the column names. 
-
-    Args:
-        df (pd.DataFrame): el dataframe
-
-    Returns:
-        header (list of tuples): [(column index, column name)]
-    """
-    header = [("col_idx", "col_name")]
-    header.extend(list(zip(range(df.shape[1]),df.columns.tolist())))
-    return header
