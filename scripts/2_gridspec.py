@@ -123,16 +123,28 @@ ironman = opendb.data.copy()
 ironman["Transitions"] = ironman["T1"] + ironman["T2"]
 graphcols = ["Swim", "Bike", "Run", "Overall", "Transitions"]
 iron_df = pd.DataFrame(
-    data = np.zeros(shape=(len(opendb.country_codes),len(graphcols))),
-    index = sorted(opendb.country_codes.keys()),
+    data = np.zeros(shape=(len(opendb.target_dict),len(graphcols))),
+    index = sorted(opendb.target_dict.keys()),
     columns=graphcols
 )
 
-#Calculate country wide means
+#Calculate country wide means 
+#NOTE Noticing that smaller count countries have lower means. 
+#Might need to stipulate you have at least 10 people racing from a country
+#In order to calculate an average
+countrytoss = set()
 for col in graphcols:
     for country in iron_df.index:
-        countrymean = ironman[col][ironman["Country"]==country].mean()
-        iron_df.loc[country, col] = round(countrymean, 1)
+        #Have at least 10 race participants for that country
+        if ironman[ironman["Country"]==country].shape[0] > 10:
+            countrymean = ironman[col][ironman["Country"]==country].mean()
+            iron_df.loc[country, col] = round(countrymean, 1)
+        else:
+            iron_df.loc[country, col] = np.nan
+
+#Drop the nan countries (countries with fewer than 10)
+iron_df.dropna(inplace=True)
+
 #sort em
 iron_df.sort_values(by="Overall", axis=0, inplace=True, ascending=True)
 
@@ -146,59 +158,102 @@ iron_df = iron_df[["Swim", "Bike", "Run", "Transitions"]]
 #subset t20
 iron_df_s = iron_df.iloc[:20, :]
 countries = list(iron_df_s.index)
-colors = list(sns.color_palette(palette="Paired", n_colors=len(graphcols)))
-# category_colors = plt.colormaps['RdYlGn'](np.linspace(0.15, 0.85, iron_df.shape[1])) #if you want to use mpl
+colors = list(sns.color_palette(palette="tab10", n_colors=len(graphcols)))
+#if you want to use mpl
+# category_colors = plt.colormaps['RdYlGn'](np.linspace(0.15, 0.85, iron_df.shape[1])) 
 
 for i, (co_name, co_color) in enumerate(zip(graphcols, colors)):
     widths = iron_df_s.iloc[:, i]
     starts = iron_df_s.iloc[:, :i+1].cumsum(axis=1).iloc[:, -1] - widths
     rects = ax_one.barh(countries, widths, left=starts, height=0.5, label=co_name, color=co_color)
     r, g, b = co_color
-    text_color = 'white' if r* g* b < 0.5 else 'darkgrey'
+    text_color = 'black' if r* g* b < 0.5 else 'darkgrey'
     if not "t" in co_name:
         f_labels = iron_df_s.iloc[:, i].apply(lambda x:support.convert_time_format(x))
         if co_name=="Swim":
-            ax_one.bar_label(rects, labels=f_labels, label_type='center', color="black", fontsize=6)
+            ax_one.bar_label(rects, labels=f_labels, label_type='center', color="white", fontsize=6)
         else:
             ax_one.bar_label(rects, labels=f_labels, label_type='center', color=text_color)
 
-        
-ax_one.legend(ncols=len(graphcols), bbox_to_anchor=(-0.06, 1), loc='lower left', fontsize='small')
-labelformat = ax_one.get_xticks().tolist()
-labelsformatted = [support.convert_time_format(x) for x in labelformat]
-ax_one.set_xticks(labelformat)
+#Alter X tick labels
+xtick_labels = ax_one.get_xticks().tolist()
+labelsformatted = [support.convert_time_format(x) for x in xtick_labels]
+ax_one.set_xticks(xtick_labels)
 ax_one.set_xticklabels(labelsformatted, rotation=-20)
+ax_one.legend(ncols=len(graphcols), loc='upper left', fontsize='small') #bbox_to_anchor=(-0.06, 0.98)
 ax_one.invert_yaxis()
-plt.show()    
+ax_one.set_title("Average times By Country", color="black", size=16)
+
+############################# violin swim #################################
+# Distribution of top 5 countries M/F swim times?
+#Grab top 5 Countries from iron_df we made earlier. 
+#%%
+im_df = ironman.copy()
+#isolate all finishers of the swim
+
+im_df = im_df[~im_df["Swim"].isnull()]
+#Subset Country counts over 10 
+    #BUG in the swim?
+im_df = im_df[im_df['Country'].map(im_df['Country'].value_counts()) > 10]
+
+#Groupby Country
+im_gp = im_df.groupby(by="Country")
+swims = im_gp["Swim"].mean().sort_values()
+top5 = swims.index[:5]
+
+# Horizontal positions for the violins. 
+# They are arbitrary numbers. They could have been [-1, 0, 1] for example.
+# fig, ax_two = plt.subplots(ncols=1, nrows=1, figsize=(10, 10))
+POSITIONS = [0, 1, 2, 3, 4]
+sample = im_df[im_df["Country"].isin(top5)]
+sample.sort_values(by="Swim", ascending=True)
+ydata = [sample[sample["Country"]==country]["Swim"].values for country in top5]
+
+#Average swim times and voilin plot for M/F distribution
+violins = ax_two.violinplot(
+    dataset=ydata,
+    positions=POSITIONS,
+    vert=True,
+    bw_method="silverman",
+    showmeans=True,
+    showmedians=False,
+    showextrema=False
+)
+
+medianprops = dict(
+    linewidth=4, 
+    color="#747473",
+    solid_capstyle="butt"
+)
+boxprops = dict(
+    linewidth=1, 
+    color="#747473"
+)
+
+# ax_two.boxplot(
+#     ydata,
+#     positions=POSITIONS, 
+#     showfliers = False, # Do not show the outliers beyond the caps.
+#     showcaps = False,   # Do not show the caps
+#     medianprops = medianprops,
+#     whiskerprops = boxprops,
+#     boxprops = boxprops
+# )
+ax_two.set_xticks(POSITIONS)
+ax_two.set_xticklabels(labelsformatted, rotation=-20)
+# plt.show()
+#%%
+############################# violin bike ####################################
 
 
-# ticks_loc = ax_ecg.get_xticks().tolist()
-# labels = utils.label_formatter(ticks_loc)
-# ax_ecg.set_xticks(ticks_loc)
-# ax_ecg.set_xticklabels(labels, rotation=-20)
-
-# zipdata = zip(iron_df_s["Swim"], iron_df_s["T1"], iron_df_s["Bike"], iron_df_s["T2"], iron_df_s["Run"]) 
-# total_time = [a + b + c + d for a, b, c, d, _ in zipdata]
-# swims = [x / y * 100 for x, y in zip(iron_df_s["Swim"], total_time)]
-# tr_one = [x / y * 100 for x, y in zip(iron_df_s["T1"], total_time)]
-# bikes = [x / y * 100 for x, y in zip(iron_df_s["Bike"], total_time)]
-# tr_two = [x / y * 100 for x, y in zip(iron_df_s["T2"], total_time)]
-# runs = [x / y * 100 for x, y in zip(iron_df_s["Run"], total_time)]
-# ax_one.barh(swims, color="lightblue")
-# ax_one.barh(tr_one, color="white")
-# ax_one.barh(bikes, color="yellow")
-# ax_one.barh(tr_two, color="white")
-# ax_one.barh(runs, color="lightred")
+############################# violin run #####################################
 
 
-############################# times barh #################################
 
 
-############################# tornado ####################################
 
-
-############################# violin #####################################
-
+plt.suptitle("2019 Ironman Results", y=0.95, ha="center", va="center", size=30)
+plt.show()
 
 # iterating the index with a counter because I need iloc and loc functions
 # to the same row as well as axis reference

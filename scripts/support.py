@@ -15,7 +15,7 @@ class OpenDB():
     data_description = str
     target_names = list,
     feature_names = list
-    rev_target_dict = dict
+    target_dict = dict
 
 def grab_dataset(dataset_id:int):
     #use openml to pull in the dataset
@@ -39,7 +39,7 @@ def grab_dataset(dataset_id:int):
         if 'feature_names' in dataset.keys():
             OpenDB.feature_names = list(dataset['feature_names'])
         
-        OpenDB.rev_target_dict = {
+        OpenDB.target_dict = {
             0:"living",
             1:"deceased"
         }
@@ -72,7 +72,7 @@ def grab_dataset(dataset_id:int):
         #     OpenDB.data[(OpenDB.data[col]=="DNS") | (OpenDB.data[col]=="DNF") | (OpenDB.data[col]=="DQ")] = np.nan
         #     OpenDB.data[col] = OpenDB.data[col].astype("float")
 
-        OpenDB.country_codes = {
+        OpenDB.target_dict = {
             'DEU': 'Germany',
             'USA': 'United States',
             'AUS': 'Australia',
@@ -167,7 +167,7 @@ def convert_time_format(seconds)->str:
     seconds %= 3600
     minutes = seconds // 60
     seconds %= 60
-    return f"{hour:.0f}:{minutes:.0f}:{seconds:.0f}"
+    return f"{int(hour):02d}:{int(minutes):02d}:{int(seconds):02d}"
 
 def view_allcols(df:pd.DataFrame)->list:
     """Here we make a list of a zipped object.  The contents being a range numbering the 
@@ -214,9 +214,6 @@ def sum_stats(datatype:str, title:str, data=pd.DataFrame):
     table.add_column("Min", style="gold3", justify="center")
     table.add_column("Max", style="yellow", justify="center")
     table.add_column("Count", style="cyan", justify="center")
-
-
-        
     datacols = data.select_dtypes(include=datatype)
     colnames = data.columns.tolist()
     for col in datacols:
