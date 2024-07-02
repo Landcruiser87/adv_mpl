@@ -49,18 +49,17 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
+from matplotlib.text import Text
 import support
 from rich import inspect
 
 #%%
 
-#This one might not work as the features have already been scaled. 
-#Which .. makes plotting a little harder. 
-opendb = support.grab_dataset(43482)
+# opendb = support.grab_dataset(43482)
 
-# Use rich to inspect the object
-inspect(opendb)
-support.view_allcols(opendb.data)
+# # Use rich to inspect the object
+# inspect(opendb)
+# support.view_allcols(opendb.data)
 
 
 #%%
@@ -165,8 +164,18 @@ for i, (co_name, co_color) in enumerate(zip(graphcols, colors)):
 
         
 ax_one.legend(ncols=len(graphcols), bbox_to_anchor=(-0.06, 1), loc='lower left', fontsize='small')
+labelformat = ax_one.get_xticks().tolist()
+labelsformatted = [support.convert_time_format(x) for x in labelformat]
+ax_one.set_xticks(labelformat)
+ax_one.set_xticklabels(labelsformatted, rotation=-20)
+ax_one.invert_yaxis()
 plt.show()    
 
+
+# ticks_loc = ax_ecg.get_xticks().tolist()
+# labels = utils.label_formatter(ticks_loc)
+# ax_ecg.set_xticks(ticks_loc)
+# ax_ecg.set_xticklabels(labels, rotation=-20)
 
 # zipdata = zip(iron_df_s["Swim"], iron_df_s["T1"], iron_df_s["Bike"], iron_df_s["T2"], iron_df_s["Run"]) 
 # total_time = [a + b + c + d for a, b, c, d, _ in zipdata]
