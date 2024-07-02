@@ -161,6 +161,14 @@ def time_convert(wrk_time:str)->timedelta:
     else:
         return np.nan
 
+def convert_time_format(seconds)->str:
+    seconds = seconds % (24 * 3600)
+    hour = seconds // 3600
+    seconds %= 3600
+    minutes = seconds // 60
+    seconds %= 60
+    return f"{hour:.0f}:{minutes:.0f}:{seconds:.0f}"
+
 def view_allcols(df:pd.DataFrame)->list:
     """Here we make a list of a zipped object.  The contents being a range numbering the 
     amount of columns and the column names. 

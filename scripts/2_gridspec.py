@@ -107,51 +107,79 @@ support.view_allcols(opendb.data)
 #Here i'm using it to not confuse the ax object with the gridspec object.  As
 #we'll use the gridspec object to manipularte various axes
 
-fig = plt.figure(figsize = (10, 10))
+fig = plt.figure(figsize = (12, 10))
 gs = gridspec.GridSpec(nrows=3, ncols=2, height_ratios=[1, 1, 1])
 ax_one = fig.add_subplot(gs[:3, 0], label="stack_country")
 ax_two = fig.add_subplot(gs[0, 1], label="time_country")
 ax_three = fig.add_subplot(gs[1:2, 1], label="tornado_mf")
 ax_four = fig.add_subplot(gs[2:, 1], label="dist_mf")
 plt.subplots_adjust(hspace=0.20)
-ironman = opendb.data.copy() 
+ 
 
 ##############################  stacked bar ##############################
 #data wrangling
 #Groupby function is malfunctioning so doing it manually.  One of the many
 #reasons to hate pandas
-
-_graphcols = ["Swim", "T1", "Bike", "T2", "Run", "Overall"]
+ironman = opendb.data.copy()
+ironman["Transitions"] = ironman["T1"] + ironman["T2"]
+graphcols = ["Swim", "Bike", "Run", "Overall", "Transitions"]
 iron_df = pd.DataFrame(
-    data = np.zeros(shape=(len(opendb.country_codes),len(_graphcols))),
+    data = np.zeros(shape=(len(opendb.country_codes),len(graphcols))),
     index = sorted(opendb.country_codes.keys()),
-    columns=_graphcols
-    )
+    columns=graphcols
+)
+
 #Calculate country wide means
-for col in _graphcols:
+for col in graphcols:
     for country in iron_df.index:
         countrymean = ironman[col][ironman["Country"]==country].mean()
         iron_df.loc[country, col] = round(countrymean, 1)
 #sort em
 iron_df.sort_values(by="Overall", axis=0, inplace=True, ascending=True)
+
+#Get rid of that col because we don't want to graph it. 
+iron_df.drop("Overall", axis=1, inplace=True)
+graphcols.pop(graphcols.index("Overall"))
+
+#rearrange the cols
+iron_df = iron_df[["Swim", "Bike", "Run", "Transitions"]]
+
+#subset t20
 iron_df_s = iron_df.iloc[:20, :]
 countries = list(iron_df_s.index)
-colors = list(sns.color_palette(palette="coolwarm", n_colors=iron_df_s.shape[0]))
+colors = list(sns.color_palette(palette="Paired", n_colors=len(graphcols)))
+# category_colors = plt.colormaps['RdYlGn'](np.linspace(0.15, 0.85, iron_df.shape[1])) #if you want to use mpl
 
-for i, (co_name, co_color) in enumerate(zip(countries, colors)):
-    zipdata = zip(iron_df_s["Swim"], iron_df_s["T1"], iron_df_s["Bike"], iron_df_s["T2"], iron_df_s["Run"]) 
-    total_time = [a + b + c + d for a, b, c, d, _ in zipdata]
-    swims = [x / y * 100 for x, y in zip(iron_df_s["Swim"], total_time)]
-    tr_one = [x / y * 100 for x, y in zip(iron_df_s["T1"], total_time)]
-    bikes = [x / y * 100 for x, y in zip(iron_df_s["Bike"], total_time)]
-    tr_two = [x / y * 100 for x, y in zip(iron_df_s["T2"], total_time)]
-    runs = [x / y * 100 for x, y in zip(iron_df_s["Run"], total_time)]
+for i, (co_name, co_color) in enumerate(zip(graphcols, colors)):
+    widths = iron_df_s.iloc[:, i]
+    starts = iron_df_s.iloc[:, :i+1].cumsum(axis=1).iloc[:, -1] - widths
+    rects = ax_one.barh(countries, widths, left=starts, height=0.5, label=co_name, color=co_color)
+    r, g, b = co_color
+    text_color = 'white' if r* g* b < 0.5 else 'darkgrey'
+    if not "t" in co_name:
+        f_labels = iron_df_s.iloc[:, i].apply(lambda x:support.convert_time_format(x))
+        if co_name=="Swim":
+            ax_one.bar_label(rects, labels=f_labels, label_type='center', color="black", fontsize=6)
+        else:
+            ax_one.bar_label(rects, labels=f_labels, label_type='center', color=text_color)
 
-    ax_one.barh(swims, color="lightblue")
-    ax_one.barh(tr_one, color="white")
-    ax_one.barh(bikes, color="yellow")
-    ax_one.barh(tr_two, color="white")
-    ax_one.barh(runs, color="lightred")
+        
+ax_one.legend(ncols=len(graphcols), bbox_to_anchor=(-0.06, 1), loc='lower left', fontsize='small')
+plt.show()    
+
+
+# zipdata = zip(iron_df_s["Swim"], iron_df_s["T1"], iron_df_s["Bike"], iron_df_s["T2"], iron_df_s["Run"]) 
+# total_time = [a + b + c + d for a, b, c, d, _ in zipdata]
+# swims = [x / y * 100 for x, y in zip(iron_df_s["Swim"], total_time)]
+# tr_one = [x / y * 100 for x, y in zip(iron_df_s["T1"], total_time)]
+# bikes = [x / y * 100 for x, y in zip(iron_df_s["Bike"], total_time)]
+# tr_two = [x / y * 100 for x, y in zip(iron_df_s["T2"], total_time)]
+# runs = [x / y * 100 for x, y in zip(iron_df_s["Run"], total_time)]
+# ax_one.barh(swims, color="lightblue")
+# ax_one.barh(tr_one, color="white")
+# ax_one.barh(bikes, color="yellow")
+# ax_one.barh(tr_two, color="white")
+# ax_one.barh(runs, color="lightred")
 
 
 ############################# times barh #################################
