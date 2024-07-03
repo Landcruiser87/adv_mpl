@@ -112,7 +112,7 @@ ax_three = fig.add_subplot(gs[1:2, 1], label="bike")
 #low right axis
 ax_four = fig.add_subplot(gs[2:, 1], label="run")
 
-plt.subplots_adjust(hspace=0.4)
+plt.subplots_adjust(hspace=0.5)
  
 ##############################  stacked bar ##############################
 #data wrangling
@@ -193,7 +193,7 @@ for event_col, ax in zip(graphcols[:3], [ax_two, ax_three, ax_four]):
     im_df = im_df[~im_df[event_col].isnull()]
     
     #Subset Country counts over 10 
-    im_df = im_df[im_df['Country'].map(im_df['Country'].value_counts()) > 10]
+    im_df = im_df[im_df['Country'].map(im_df['Country'].value_counts()) > 5]
 
     #Groupby Country and calc means
     im_gp = im_df.groupby(by="Country")
@@ -254,17 +254,17 @@ for event_col, ax in zip(graphcols[:3], [ax_two, ax_three, ax_four]):
 
     #Adjust x ticks / labels
     ax.set_xticks(POSITIONS)
-    labelsformatted = [opendb.target_dict.get(label) for label in top5]
+    labelsformatted = [f"{opendb.target_dict.get(label)}\n{ydata[idx].shape[0]}" for idx, label in enumerate(top5)]
     ax.set_xticklabels(labelsformatted, rotation=-25)
-    
+
     #Adjust y ticks / labels
     ax.set_ylabel("Hours")
 
     #Add horizontal dash lines at the y labels
     HLINES = ytick_labels = ax.get_yticks().tolist()
-
     for h in HLINES:
         ax.axhline(h, color="#747473", ls=(0, (2, 2)), alpha=0.6, zorder=0)
+
     # Old code for adjusting tick labels.  Yielded wierdly formatted intervals
     # ytick_labels = ax.get_yticks().tolist()
     # labelsformatted = [support.convert_time_format(y) for y in ytick_labels]
