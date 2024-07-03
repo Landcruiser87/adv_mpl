@@ -193,7 +193,7 @@ for event_col, ax in zip(graphcols[:3], [ax_two, ax_three, ax_four]):
     im_df = im_df[~im_df[event_col].isnull()]
     
     #Subset Country counts over 10 
-    im_df = im_df[im_df['Country'].map(im_df['Country'].value_counts()) > 5]
+    im_df = im_df[im_df['Country'].map(im_df['Country'].value_counts()) > 10]
 
     #Groupby Country and calc means
     im_gp = im_df.groupby(by="Country")
@@ -212,9 +212,6 @@ for event_col, ax in zip(graphcols[:3], [ax_two, ax_three, ax_four]):
     #resample into hours.  Fixing the ticks is too hard. 
     ydata = [sample[sample["Country"]==country][event_col] for country in top5]
     ydata = [y.astype("timedelta64[s]") / pd.Timedelta(1, "h") for y in ydata]
-
-
-    # .astype("timedelta64[h]")
 
     #Average swim times and voilin plot for M/F distribution
     violins = ax.violinplot(
