@@ -55,11 +55,11 @@ from rich import inspect
 
 #%%
 
-# opendb = support.grab_dataset(43482)
+opendb = support.grab_dataset(43482)
 
-# # Use rich to inspect the object
-# inspect(opendb)
-# support.view_allcols(opendb.data)
+# Use rich to inspect the object
+inspect(opendb)
+support.view_allcols(opendb.data)
 
 
 #%%
