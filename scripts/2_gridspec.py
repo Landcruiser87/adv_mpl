@@ -42,9 +42,8 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
-import matplotlib.dates as mdates
-import matplotlib.ticker as ticker
 from datetime import timedelta
+from matplotlib.lines import Line2D
 import support
 from rich import inspect
 
@@ -131,10 +130,13 @@ iron_df = pd.DataFrame(
 #NOTE Noticing that smaller count countries have lower means. 
 #Might need to stipulate you have at least 10 people racing from a country
 #In order to calculate an average
+
+#Set the minimim amount of records we need for an average
+min_records = 10
 for col in graphcols:
     for country in iron_df.index:
         #Have at least 10 race participants for that country
-        if ironman[ironman["Country"]==country].shape[0] > 10:
+        if ironman[ironman["Country"]==country].shape[0] > min_records:
             countrymean = ironman[col][ironman["Country"]==country].mean()
             iron_df.loc[country, col] = round(countrymean, 1)
         else:
@@ -166,7 +168,7 @@ for i, (co_name, co_color) in enumerate(zip(graphcols, colors)):
     rects = ax_one.barh(countries, widths, left=starts, height=0.5, label=co_name, color=co_color)
     r, g, b = co_color
     text_color = 'black' if r* g* b < 0.5 else 'darkgrey'
-    if not "t" in co_name:
+    if not "T" in co_name:
         f_labels = iron_df_s.iloc[:, i].apply(lambda x:support.convert_time_format(x))
         if co_name=="Swim":
             ax_one.bar_label(rects, labels=f_labels, label_type='center', color="white", fontsize=6)
@@ -183,17 +185,18 @@ ax_one.legend(ncols=len(graphcols), loc='upper left', fontsize='small') #bbox_to
 ax_one.invert_yaxis()
 ax_one.set_title("Average times By Country", color="black", size=16)
 
-############################# violin swim #################################
-# Distribution of top 5 countries M/F swim times?
-#Grab top 5 Countries from iron_df we made earlier. 
 #%%
+############################# violin swim, bike, run #################################
+
+#Subchart data wrangling and plotting
 im_df = ironman.copy()
 for event_col, ax in zip(graphcols[:3], [ax_two, ax_three, ax_four]):
-    #Subset any null values. 
+    
+    #Filter out any null values for event in question
     im_df = im_df[~im_df[event_col].isnull()]
     
     #Subset Country counts over 10 
-    im_df = im_df[im_df['Country'].map(im_df['Country'].value_counts()) > 10]
+    im_df = im_df[im_df['Country'].map(im_df['Country'].value_counts()) > min_records] #over 60 shows USA
 
     #Groupby Country and calc means
     im_gp = im_df.groupby(by="Country")
@@ -201,16 +204,15 @@ for event_col, ax in zip(graphcols[:3], [ax_two, ax_three, ax_four]):
 
     #howmany do ya want
     howmany = 8
-    top5 = swims.index[:howmany]
+    top_x = swims.index[:howmany]
 
     POSITIONS = list(range(howmany))
-    
     COLORS = list(sns.color_palette(palette="coolwarm", n_colors=len(POSITIONS)))
-    sample = im_df[im_df["Country"].isin(top5)]
+    sample = im_df[im_df["Country"].isin(top_x)]
     sample.sort_values(by=event_col, ascending=True)
     
     #resample into hours.  Fixing the ticks is too hard. 
-    ydata = [sample[sample["Country"]==country][event_col] for country in top5]
+    ydata = [sample[sample["Country"]==country][event_col] for country in top_x]
     ydata = [y.astype("timedelta64[s]") / pd.Timedelta(1, "h") for y in ydata]
 
     #Average swim times and voilin plot for M/F distribution
@@ -238,6 +240,7 @@ for event_col, ax in zip(graphcols[:3], [ax_two, ax_three, ax_four]):
         linewidth=1, 
         color="#747473"
     )
+
     #throw a boxplot on it to show quantiles
     ax.boxplot(
         ydata,
@@ -251,7 +254,7 @@ for event_col, ax in zip(graphcols[:3], [ax_two, ax_three, ax_four]):
 
     #Adjust x ticks / labels
     ax.set_xticks(POSITIONS)
-    labelsformatted = [f"{opendb.target_dict.get(label)}\n{ydata[idx].shape[0]}" for idx, label in enumerate(top5)]
+    labelsformatted = [f"{opendb.target_dict.get(label)}\n{ydata[idx].shape[0]}" for idx, label in enumerate(top_x)]
     ax.set_xticklabels(labelsformatted, rotation=-25)
 
     #Adjust y ticks / labels
@@ -269,6 +272,12 @@ for event_col, ax in zip(graphcols[:3], [ax_two, ax_three, ax_four]):
     # ax.set_yticklabels(labelsformatted, rotation=0)
 
     ax.set_title(f"Top {howmany} fastest {event_col} countries")
+    #Create custom Legend
+    legend_elements = []
+    legend_elements.append(Line2D([0], [0], color="royalblue", alpha=0.8))
+    legend_elements.append(Line2D([0], [0], linewidth=2, color="#747473", alpha=0.8))
+    labels = ["mean", "median"]
+    ax.legend(handles=legend_elements, labels=labels, loc='upper right')
 
 plt.suptitle("2019 Ironman Kona Results", y=0.95, ha="center", va="center", size=30)
 plt.show()
