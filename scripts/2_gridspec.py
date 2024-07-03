@@ -199,13 +199,13 @@ im_df = im_df[im_df['Country'].map(im_df['Country'].value_counts()) > 10]
 #Groupby Country
 im_gp = im_df.groupby(by="Country")
 swims = im_gp["Swim"].mean().sort_values()
-top5 = swims.index[:5]
+top5 = swims.index[:10]
 
 # Horizontal positions for the violins. 
 # They are arbitrary numbers. They could have been [-1, 0, 1] for example.
 # fig, ax_two = plt.subplots(ncols=1, nrows=1, figsize=(10, 10))
-POSITIONS = [0, 1, 2, 3, 4]
-COLORS = list(sns.color_palette(palette="tab10", n_colors=len(POSITIONS)))
+POSITIONS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+COLORS = list(sns.color_palette(palette="coolwarm", n_colors=len(POSITIONS)))
 sample = im_df[im_df["Country"].isin(top5)]
 sample.sort_values(by="Swim", ascending=True)
 ydata = [sample[sample["Country"]==country]["Swim"].values for country in top5]
@@ -221,8 +221,14 @@ violins = ax_two.violinplot(
     showextrema=False
 )
 
+for r, pc in enumerate(violins["bodies"]):
+    pc.set_facecolor(COLORS[r])
+    pc.set_edgecolor("black")
+    pc.set_alpha(0.5)
+
+
 medianprops = dict(
-    linewidth=4, 
+    linewidth=2, 
     color="#747473",
     solid_capstyle="butt"
 )
@@ -241,9 +247,9 @@ ax_two.boxplot(
     boxprops = boxprops
 )
 ax_two.set_xticks(POSITIONS)
-labelsformatted = list(top5)
-ax_two.set_xticklabels(labelsformatted, rotation=-20)
-
+labelsformatted = [opendb.target_dict.get(label) for label in top5]
+ax_two.set_xticklabels(labelsformatted, rotation=-15)
+    
 ytick_labels = ax_two.get_yticks().tolist()
 labelsformatted = [support.convert_time_format(y) for y in ytick_labels]
 ax_two.set_yticks(ytick_labels)
@@ -252,128 +258,144 @@ ax_two.set_yticklabels(labelsformatted, rotation=0)
 
 ax_two.set_title("Top 5 fastest Swim countries")
 # plt.show()
-#%%
-############################# violin bike ####################################
-im_df = im_df[~im_df["Bike"].isnull()]
-#Subset Country counts over 10 
-im_df = im_df[im_df['Country'].map(im_df['Country'].value_counts()) > 10]
+# #%%
+# ############################# violin bike ####################################
+# im_df = im_df[~im_df["Bike"].isnull()]
+# #Subset Country counts over 10 
+# im_df = im_df[im_df['Country'].map(im_df['Country'].value_counts()) > 10]
 
-#Groupby Country
-im_gp = im_df.groupby(by="Country")
-swims = im_gp["Bike"].mean().sort_values()
-top5 = swims.index[:5]
+# #Groupby Country
+# im_gp = im_df.groupby(by="Country")
+# swims = im_gp["Bike"].mean().sort_values()
+# top5 = swims.index[:10]
 
-# Horizontal positions for the violins. 
-# They are arbitrary numbers. They could have been [-1, 0, 1] for example.
-# fig, ax_two = plt.subplots(ncols=1, nrows=1, figsize=(10, 10))
-POSITIONS = [0, 1, 2, 3, 4]
-sample = im_df[im_df["Country"].isin(top5)]
-sample.sort_values(by="Bike", ascending=True)
-ydata = [sample[sample["Country"]==country]["Bike"].values for country in top5]
+# # Horizontal positions for the violins. 
+# # They are arbitrary numbers. They could have been [-1, 0, 1] for example.
+# # fig, ax_two = plt.subplots(ncols=1, nrows=1, figsize=(10, 10))
+# POSITIONS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+# COLORS = list(sns.color_palette(palette="coolwarm", n_colors=len(POSITIONS)))
+# sample = im_df[im_df["Country"].isin(top5)]
+# sample.sort_values(by="Bike", ascending=True)
+# ydata = [sample[sample["Country"]==country]["Bike"].values for country in top5]
 
-#Average swim times and voilin plot for M/F distribution
-violins = ax_three.violinplot(
-    dataset=ydata,
-    positions=POSITIONS,
-    vert=True,
-    bw_method="silverman",
-    showmeans=True,
-    showmedians=False,
-    showextrema=False
-)
-
-medianprops = dict(
-    linewidth=4, 
-    color="#747473",
-    solid_capstyle="butt"
-)
-boxprops = dict(
-    linewidth=1, 
-    color="#747473"
-)
-
-ax_three.boxplot(
-    ydata,
-    positions=POSITIONS, 
-    showfliers = False, # Do not show the outliers beyond the caps.
-    showcaps = False,   # Do not show the caps
-    medianprops = medianprops,
-    whiskerprops = boxprops,
-    boxprops = boxprops
-)
-ax_three.set_xticks(POSITIONS)
-labelsformatted = list(top5)
-ax_three.set_xticklabels(labelsformatted, rotation=-20)
-ax_three.set_title("Top 5 fastest Bike countries")
-
-ytick_labels = ax_three.get_yticks().tolist()
-labelsformatted = [support.convert_time_format(y) for y in ytick_labels]
-ax_three.set_yticks(ytick_labels)
-ax_three.set_yticklabels(labelsformatted, rotation=0)
-
-############################# violin run #####################################
-
-im_df = im_df[~im_df["Run"].isnull()]
-#Subset Country counts over 10 
-im_df = im_df[im_df['Country'].map(im_df['Country'].value_counts()) > 10]
-
-#Groupby Country
-im_gp = im_df.groupby(by="Country")
-swims = im_gp["Run"].mean().sort_values()
-top5 = swims.index[:5]
-
-# Horizontal positions for the violins. 
-# They are arbitrary numbers. They could have been [-1, 0, 1] for example.
-# fig, ax_two = plt.subplots(ncols=1, nrows=1, figsize=(10, 10))
-POSITIONS = [0, 1, 2, 3, 4]
-sample = im_df[im_df["Country"].isin(top5)]
-sample.sort_values(by="Run", ascending=True)
-ydata = [sample[sample["Country"]==country]["Run"].values for country in top5]
-
-#Average swim times and voilin plot for M/F distribution
-violins = ax_four.violinplot(
-    dataset=ydata,
-    positions=POSITIONS,
-    vert=True,
-    bw_method="silverman",
-    showmeans=True,
-    showmedians=False,
-    showextrema=False
-)
-
-medianprops = dict(
-    linewidth=4, 
-    color="#747473",
-    solid_capstyle="butt"
-)
-boxprops = dict(
-    linewidth=1, 
-    color="#747473"
-)
-
-ax_four.boxplot(
-    ydata,
-    positions=POSITIONS, 
-    showfliers = False, # Do not show the outliers beyond the caps.
-    showcaps = False,   # Do not show the caps
-    medianprops = medianprops,
-    whiskerprops = boxprops,
-    boxprops = boxprops
-)
-ax_four.set_xticks(POSITIONS)
-labelsformatted = list(top5)
-ax_four.set_xticklabels(labelsformatted, rotation=-20)
-
-ytick_labels = ax_four.get_yticks().tolist()
-labelsformatted = [support.convert_time_format(y) for y in ytick_labels]
-ax_four.set_yticks(ytick_labels)
-ax_four.set_yticklabels(labelsformatted, rotation=0)
+# #Average swim times and voilin plot for M/F distribution
+# violins = ax_three.violinplot(
+#     dataset=ydata,
+#     positions=POSITIONS,
+#     vert=True,
+#     bw_method="silverman",
+#     showmeans=True,
+#     showmedians=False,
+#     showextrema=False
+# )
 
 
-ax_four.set_title("Top 5 fastest Run countries")
+# for r, pc in enumerate(violins["bodies"]):
+#     pc.set_facecolor(COLORS[r])
+#     pc.set_edgecolor("black")
+#     pc.set_alpha(0.5)
 
-plt.suptitle("2019 Ironman Results", y=0.95, ha="center", va="center", size=30)
+
+# medianprops = dict(
+#     linewidth=2, 
+#     color="#747473",
+#     solid_capstyle="butt"
+# )
+# boxprops = dict(
+#     linewidth=1, 
+#     color="#747473"
+# )
+
+# ax_three.boxplot(
+#     ydata,
+#     positions=POSITIONS, 
+#     showfliers = False, # Do not show the outliers beyond the caps.
+#     showcaps = False,   # Do not show the caps
+#     medianprops = medianprops,
+#     whiskerprops = boxprops,
+#     boxprops = boxprops
+# )
+# ax_three.set_xticks(POSITIONS)
+# labelsformatted = [opendb.target_dict.get(label) for label in top5]
+# ax_three.set_xticklabels(labelsformatted, rotation=-15)
+# ax_three.set_title("Top 5 fastest Bike countries")
+
+# ytick_labels = ax_three.get_yticks().tolist()
+# labelsformatted = [support.convert_time_format(y) for y in ytick_labels]
+# ax_three.set_yticks(ytick_labels)
+# ax_three.set_yticklabels(labelsformatted, rotation=0)
+
+# ############################# violin run #####################################
+
+# im_df = im_df[~im_df["Run"].isnull()]
+# #Subset Country counts over 10 
+# im_df = im_df[im_df['Country'].map(im_df['Country'].value_counts()) > 10]
+
+# #Groupby Country
+# im_gp = im_df.groupby(by="Country")
+# swims = im_gp["Run"].mean().sort_values()
+# top5 = swims.index[:10]
+
+# # Horizontal positions for the violins. 
+# # They are arbitrary numbers. They could have been [-1, 0, 1] for example.
+# # fig, ax_two = plt.subplots(ncols=1, nrows=1, figsize=(10, 10))
+# POSITIONS = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
+# COLORS = list(sns.color_palette(palette="coolwarm", n_colors=len(POSITIONS)))
+# sample = im_df[im_df["Country"].isin(top5)]
+# sample.sort_values(by="Run", ascending=True)
+# ydata = [sample[sample["Country"]==country]["Run"].values for country in top5]
+
+# #Average swim times and voilin plot for M/F distribution
+# violins = ax_four.violinplot(
+#     dataset=ydata,
+#     positions=POSITIONS,
+#     vert=True,
+#     bw_method="silverman",
+#     showmeans=True,
+#     showmedians=False,
+#     showextrema=False
+# )
+
+# for r, pc in enumerate(violins["bodies"]):
+#     pc.set_facecolor(COLORS[r])
+#     pc.set_edgecolor("black")
+#     pc.set_alpha(0.5)
+
+
+# medianprops = dict(
+#     linewidth=2, 
+#     color="#747473",
+#     solid_capstyle="butt"
+# )
+# boxprops = dict(
+#     linewidth=1, 
+#     color="#747473"
+# )
+
+# ax_four.boxplot(
+#     ydata,
+#     positions=POSITIONS, 
+#     showfliers = False, # Do not show the outliers beyond the caps.
+#     showcaps = False,   # Do not show the caps
+#     medianprops = medianprops,
+#     whiskerprops = boxprops,
+#     boxprops = boxprops
+# )
+# ax_four.set_xticks(POSITIONS)
+# labelsformatted = [opendb.target_dict.get(label) for label in top5]
+# ax_four.set_xticklabels(labelsformatted, rotation=-15)
+
+# ytick_labels = ax_four.get_yticks().tolist()
+# labelsformatted = [support.convert_time_format(y) for y in ytick_labels]
+# ax_four.set_yticks(ytick_labels)
+# ax_four.set_yticklabels(labelsformatted, rotation=0)
+# ax_four.set_title("Top 5 fastest Run countries")
+
+plt.suptitle("2019 Ironman Kona Results", y=0.95, ha="center", va="center", size=30)
 plt.show()
+
+#TODO - UPdate x axis on the  mini graphs to have even intervals.  not the time wierdness that it is. 
+
 
 # iterating the index with a counter because I need iloc and loc functions
 # to the same row as well as axis reference
