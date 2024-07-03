@@ -150,16 +150,16 @@ def grab_dataset(dataset_id:int):
 
     return OpenDB
 
-
-def time_convert(wrk_time:str)->timedelta:
-    if wrk_time[0].isnumeric and wrk_time[-1].isnumeric():
-        times = wrk_time.split(":")
-        hour = times[0]
-        min = times[1]
-        sec = times[2]
-        return timedelta(hours=hour, minutes=min, seconds=sec)
-    else:
-        return np.nan
+# ehhhh why is this function here. 
+# def time_convert(wrk_time:str)->timedelta:
+#     if wrk_time[0].isnumeric and wrk_time[-1].isnumeric():
+#         times = wrk_time.split(":")
+#         hour = times[0]
+#         min = times[1]
+#         sec = times[2]
+#         return timedelta(hours=hour, minutes=min, seconds=sec)
+#     else:
+#         return np.nan
 
 def convert_time_format(seconds)->str:
     seconds = seconds % (24 * 3600)
@@ -168,6 +168,11 @@ def convert_time_format(seconds)->str:
     minutes = seconds // 60
     seconds %= 60
     return f"{int(hour):02d}:{int(minutes):02d}:{int(seconds):02d}"
+
+# def convert_2_timedelta(second_time:int)->int:
+#     hours, remainder = divmod(second_time, 3600)
+#     minutes, seconds = divmod(remainder, 60)
+#     return timedelta(hours=hours, minutes=minutes, seconds=seconds)
 
 def view_allcols(df:pd.DataFrame)->list:
     """Here we make a list of a zipped object.  The contents being a range numbering the 

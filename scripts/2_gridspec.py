@@ -49,12 +49,14 @@ import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
 import matplotlib.gridspec as gridspec
-from matplotlib.text import Text
+import matplotlib.dates as mdates
+import matplotlib.ticker as ticker
+from datetime import timedelta
 import support
 from rich import inspect
 
 #%%
-
+#Load dataset into memory
 opendb = support.grab_dataset(43482)
 
 # Use rich to inspect the object
@@ -132,7 +134,6 @@ iron_df = pd.DataFrame(
 #NOTE Noticing that smaller count countries have lower means. 
 #Might need to stipulate you have at least 10 people racing from a country
 #In order to calculate an average
-countrytoss = set()
 for col in graphcols:
     for country in iron_df.index:
         #Have at least 10 race participants for that country
@@ -163,8 +164,8 @@ colors = list(sns.color_palette(palette="tab10", n_colors=len(graphcols)))
 # category_colors = plt.colormaps['RdYlGn'](np.linspace(0.15, 0.85, iron_df.shape[1])) 
 
 for i, (co_name, co_color) in enumerate(zip(graphcols, colors)):
-    widths = iron_df_s.iloc[:, i]
-    starts = iron_df_s.iloc[:, :i+1].cumsum(axis=1).iloc[:, -1] - widths
+    widths = iron_df_s.iloc[:, i].astype("timedelta64[s]") / pd.Timedelta(1, "h")
+    starts = (iron_df_s.iloc[:, :i+1].cumsum(axis=1).iloc[:, -1].astype("timedelta64[s]") / pd.Timedelta(1, "h")) - widths 
     rects = ax_one.barh(countries, widths, left=starts, height=0.5, label=co_name, color=co_color)
     r, g, b = co_color
     text_color = 'black' if r* g* b < 0.5 else 'darkgrey'
@@ -173,13 +174,14 @@ for i, (co_name, co_color) in enumerate(zip(graphcols, colors)):
         if co_name=="Swim":
             ax_one.bar_label(rects, labels=f_labels, label_type='center', color="white", fontsize=6)
         else:
-            ax_one.bar_label(rects, labels=f_labels, label_type='center', color=text_color)
+            ax_one.bar_label(rects, labels=f_labels, label_type='center', color=text_color, fontsize=10)
 
 #Alter X tick labels
-xtick_labels = ax_one.get_xticks().tolist()
-labelsformatted = [support.convert_time_format(x) for x in xtick_labels]
-ax_one.set_xticks(xtick_labels)
-ax_one.set_xticklabels(labelsformatted, rotation=-20)
+# xtick_labels = ax_one.get_xticks().tolist()
+# labelsformatted = [support.convert_time_format(x) for x in xtick_labels]
+# ax_one.set_xticks(xtick_labels)
+# ax_one.set_xticklabels(ax_one.get_xticklabels(), rotation=-20)
+ax_one.set_xlabel("Hours")
 ax_one.legend(ncols=len(graphcols), loc='upper left', fontsize='small') #bbox_to_anchor=(-0.06, 0.98)
 ax_one.invert_yaxis()
 ax_one.set_title("Average times By Country", color="black", size=16)
@@ -190,13 +192,16 @@ ax_one.set_title("Average times By Country", color="black", size=16)
 #%%
 im_df = ironman.copy()
 for event_col, ax in zip(graphcols[:3], [ax_two, ax_three, ax_four]):
+    #Subset any null values. 
     im_df = im_df[~im_df[event_col].isnull()]
+    
     #Subset Country counts over 10 
     im_df = im_df[im_df['Country'].map(im_df['Country'].value_counts()) > 10]
 
-    #Groupby Country
+    #Groupby Country and calc means
     im_gp = im_df.groupby(by="Country")
     swims = im_gp[event_col].mean().sort_values()
+
     #howmany do ya want
     howmany = 8
     top5 = swims.index[:howmany]
@@ -205,7 +210,13 @@ for event_col, ax in zip(graphcols[:3], [ax_two, ax_three, ax_four]):
     COLORS = list(sns.color_palette(palette="coolwarm", n_colors=len(POSITIONS)))
     sample = im_df[im_df["Country"].isin(top5)]
     sample.sort_values(by=event_col, ascending=True)
-    ydata = [sample[sample["Country"]==country][event_col].values for country in top5]
+    
+    #resample into hours.  Fixing the ticks is too hard. 
+    ydata = [sample[sample["Country"]==country][event_col] for country in top5]
+    ydata = [y.astype("timedelta64[s]") / pd.Timedelta(1, "h") for y in ydata]
+
+
+    # .astype("timedelta64[h]")
 
     #Average swim times and voilin plot for M/F distribution
     violins = ax.violinplot(
@@ -223,7 +234,6 @@ for event_col, ax in zip(graphcols[:3], [ax_two, ax_three, ax_four]):
         pc.set_edgecolor("black")
         pc.set_alpha(0.5)
 
-
     medianprops = dict(
         linewidth=2, 
         color="#747473",
@@ -233,7 +243,7 @@ for event_col, ax in zip(graphcols[:3], [ax_two, ax_three, ax_four]):
         linewidth=1, 
         color="#747473"
     )
-
+    #throw a boxplot on it to show quantiles
     ax.boxplot(
         ydata,
         positions=POSITIONS, 
@@ -243,67 +253,23 @@ for event_col, ax in zip(graphcols[:3], [ax_two, ax_three, ax_four]):
         whiskerprops = boxprops,
         boxprops = boxprops
     )
+
+    #Adjust x ticks / labels
     ax.set_xticks(POSITIONS)
     labelsformatted = [opendb.target_dict.get(label) for label in top5]
     ax.set_xticklabels(labelsformatted, rotation=-25)
-        
-    ytick_labels = ax.get_yticks().tolist()
-    labelsformatted = [support.convert_time_format(y) for y in ytick_labels]
-    ax.set_yticks(ytick_labels)
-    ax.set_yticklabels(labelsformatted, rotation=0)
+    
+    #Adjust y ticks / labels
+    ax.set_ylabel("Hours")
+    # ytick_labels = ax.get_yticks().tolist()
+    # labelsformatted = [support.convert_time_format(y) for y in ytick_labels]
+    # ax.set_yticks(ytick_labels)
+    # ax.set_yticklabels(labelsformatted, rotation=0)
+
     ax.set_title(f"Top {howmany} fastest {event_col} countries")
 
 plt.suptitle("2019 Ironman Kona Results", y=0.95, ha="center", va="center", size=30)
 plt.show()
 
-#TODO - UPdate x axis on the  mini graphs to have even intervals.  not the time wierdness that it is. 
-
-
-# iterating the index with a counter because I need iloc and loc functions
-# to the same row as well as axis reference
-# for df_cntr, idx in enumerate(iron_df.index):
-#     sns.kdeplot(
-#         data = iron_df.loc[idx, "hr_arr"], color=iron_df.loc[idx, "color"],
-#         ax = ax[df_cntr], bw_adjust=1, fill=True, 
-#         alpha=1, linewidth=1.5) #clip_on=False
-#     sns.kdeplot(
-#         data = iron_df.loc[idx, "hr_arr"], color="w",
-#         ax = ax[df_cntr], bw_adjust=1, linewidth=3)
-#     # ax[idx].set_xlim([min_a, max_a])
-#     workout_date = iron_df.loc[idx, "start_date"]
-#     ax[df_cntr].annotate(
-#         text = f"{workout_date:%m-%d-%Y}",
-#         xy=(0.25, 0.5), 
-#         textcoords="axes fraction",
-#         xytext=(0.1, 0.25),
-#         color = iron_df.loc[idx, "color"],
-#         ha='center',
-#         fontweight="bold",
-#         annotation_clip=False)
-
-#     # if covid_dates:
-#     #     for cdate in covid_dates:
-#     #         if cdate < workout_date:
-#     #             ax[df_cntr].annotate(
-#     #             text = f"Got Covid!! {cdate:%m-%d-%Y}",
-#     #             xy=(0.25, 0.5), 
-#     #             textcoords="axes fraction",
-#     #             xytext=(0.3, 0.25),
-#     #             color = iron_df.loc[idx, "color"],
-#     #             ha='center',
-#     #             fontweight="bold",
-#     #             annotation_clip=False)
-#     #             covid_dates.pop(0)    
-
-#     ax[df_cntr].set_yticks([])
-#     ax[df_cntr].set_ylabel("")
-#     ax[df_cntr].spines["left"].set_visible(False)
-#     ax[df_cntr].spines["bottom"].set_visible(False)
-#     ax[df_cntr].spines["top"].set_visible(False)
-#     ax[df_cntr].spines["right"].set_visible(False)
-
-# fig.subplots_adjust(hspace=0.1)
-# ax[-1].spines["bottom"].set_visible(True)
-# plt.xlabel("Heart rate (bpm)", fontweight="bold", fontsize=13)
-# plt.suptitle(f"KDE of HR over time for workout\n\n{activity}", ha="center", fontsize=20)
-# plt.show()
+#TODO - Update y axis on the  mini graphs to have even intervals.  not the time wierdness that it is. 
+#TODO - Add dashed ahlines to highlight hours
