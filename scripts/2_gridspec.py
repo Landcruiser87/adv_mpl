@@ -16,14 +16,7 @@
     # pics that show the different functions.
     # resource article?  someone has to have written about this in a non-doc fashion
 
-# 2. time series that i deconstruct with wavelets or FFT on the other side. 
-    # - Could build that into the dashboard example too. 
-    #MITDB maybe?  .. hmm. nah. 
-    #multimodal datset?  
-        # this might be best.  
-        # but won't be able to read it into memory. 
-        # Could use the German multimodal dataset I found for Tom
-        # He also suggested another one.. can't remember
+
     #Daily bikes?
         #45103
         #this one coudl be fun.  Lots of good weather data
@@ -110,13 +103,17 @@ support.view_allcols(opendb.data)
 
 fig = plt.figure(figsize = (12, 10))
 gs = gridspec.GridSpec(nrows=3, ncols=2, height_ratios=[1, 1, 1])
+#Far left axis
 ax_one = fig.add_subplot(gs[:3, 0], label="stack_country")
-ax_two = fig.add_subplot(gs[0, 1], label="time_country")
-ax_three = fig.add_subplot(gs[1:2, 1], label="tornado_mf")
-ax_four = fig.add_subplot(gs[2:, 1], label="dist_mf")
+#Top right axis
+ax_two = fig.add_subplot(gs[0, 1], label="swim")
+#mid right axis
+ax_three = fig.add_subplot(gs[1:2, 1], label="bike")
+#low right axis
+ax_four = fig.add_subplot(gs[2:, 1], label="run")
+
 plt.subplots_adjust(hspace=0.4)
  
-
 ##############################  stacked bar ##############################
 #data wrangling
 #Groupby function is malfunctioning so doing it manually.  One of the many
@@ -207,6 +204,7 @@ for event_col, ax in zip(graphcols[:3], [ax_two, ax_three, ax_four]):
     top5 = swims.index[:howmany]
 
     POSITIONS = list(range(howmany))
+    
     COLORS = list(sns.color_palette(palette="coolwarm", n_colors=len(POSITIONS)))
     sample = im_df[im_df["Country"].isin(top5)]
     sample.sort_values(by=event_col, ascending=True)
@@ -261,6 +259,13 @@ for event_col, ax in zip(graphcols[:3], [ax_two, ax_three, ax_four]):
     
     #Adjust y ticks / labels
     ax.set_ylabel("Hours")
+
+    #Add horizontal dash lines at the y labels
+    HLINES = ytick_labels = ax.get_yticks().tolist()
+
+    for h in HLINES:
+        ax.axhline(h, color="#747473", ls=(0, (2, 2)), alpha=0.6, zorder=0)
+    # Old code for adjusting tick labels.  Yielded wierdly formatted intervals
     # ytick_labels = ax.get_yticks().tolist()
     # labelsformatted = [support.convert_time_format(y) for y in ytick_labels]
     # ax.set_yticks(ytick_labels)
