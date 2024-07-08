@@ -231,7 +231,7 @@ plt.show()
 #     data_description = str          (dataset description)
 #     target_names     = list,        (values found in target variable)
 #     feature_names    = list         (dataset column names )
-#     rev_target_dict  = dict         (numbered dict with target_names) - used for transformations when graphing
+#     target_dict  = dict         (numbered dict with target_names) - used for transformations when graphing
 
 opendb = support.grab_dataset(43008)
 
@@ -633,10 +633,10 @@ feat_1 = 'ejection_fraction'
 feat_2 = 'serum_creatinine'
 
 #Map the target variable to a str counterpart
-hue_target = opendb.target.map(opendb.rev_target_dict)
+hue_target = opendb.target.map(opendb.target_dict)
 
 #Sort those target variables by their dictionary index
-hue_ord  = sorted(opendb.rev_target_dict.items(), key=lambda x:x[0])
+hue_ord  = sorted(opendb.target_dict.items(), key=lambda x:x[0])
 
 #pull out the names in order 
 hue_ord = [x[1] for x in hue_ord]

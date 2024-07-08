@@ -57,7 +57,7 @@ support.view_allcols(opendb.data)
 
 
 #%%
-#!Which country produces the fastest Ironman competitors.  Male or female.
+#!Which country produces the fastest Ironman competitors.
 # Col descriptions
 # [('col_idx', 'col_name'),
 #  (0, 'BIB'),              (int)
@@ -211,11 +211,11 @@ for event_col, ax in zip(graphcols[:3], [ax_two, ax_three, ax_four]):
     sample = im_df[im_df["Country"].isin(top_x)]
     sample.sort_values(by=event_col, ascending=True)
     
-    #resample into hours.  Fixing the ticks is too hard. 
+    #resample into hours.  Fixing the tick as seconds to line up with hourly transitions is too hard. 
     ydata = [sample[sample["Country"]==country][event_col] for country in top_x]
     ydata = [y.astype("timedelta64[s]") / pd.Timedelta(1, "h") for y in ydata]
 
-    #Average swim times and voilin plot for M/F distribution
+    #Average swim times and voilin plot for distribution
     violins = ax.violinplot(
         dataset=ydata,
         positions=POSITIONS,
@@ -241,7 +241,7 @@ for event_col, ax in zip(graphcols[:3], [ax_two, ax_three, ax_four]):
         color="#747473"
     )
 
-    #throw a boxplot on it to show quantiles
+    #throw a boxplot on it to show quartiles
     ax.boxplot(
         ydata,
         positions=POSITIONS, 
