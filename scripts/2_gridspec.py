@@ -282,5 +282,5 @@ for event_col, ax in zip(graphcols[:3], [ax_two, ax_three, ax_four]):
 plt.suptitle("2019 Ironman Kona Results", y=0.95, ha="center", va="center", size=30)
 plt.show()
 
-#TODO - Update y axis on the  mini graphs to have even intervals.  not the time wierdness that it is. 
-#TODO - Add dashed ahlines to highlight hours
+#[x] - Update y axis on the  mini graphs to have even intervals.  not the time wierdness that it is. 
+#[x] - Add dashed ahlines to highlight hours
