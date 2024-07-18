@@ -36,8 +36,8 @@
 # do! Its really just a few lines to direct where the debugger needs to access
 # the virtual environment you've hopefully stored in the root of your folder.  
 # Otherwise you can paste in these parameters into a json file in your `.vscode`
-# folder in your root directory
-
+# folder in your root directory.
+#
 # {	"version": "0.2.0",
 # 	"configurations": [
 # 		{
@@ -56,6 +56,8 @@
 # 		}
 # 	]
 # }
+#
+#%%
 
 # They really don't change much and you can put whatever file linters or type
 # checking devices in there to run whenever you launch the debugger.  
@@ -94,9 +96,9 @@
 # these main tabs as well as a new navigation bar to run the debugger with your mouse.  
 # I prefer to run them with my keyboard. Here's what it all should look like after you hit a breakpoint
 #
-# ![debugger](./results/lecture_2/images/debug_funcs.png)
+# ![debugger](./results/lecture_2/images/debug_nav.png)
 #
-# Now for navigation.  You have 6 different options. (from left to right)
+# Now for navigation.  You have 6 different options. (from left to right in the above image)
 # | Methods | Keyboard | Description |
 # | :--- | :---: | :--- |
 # | Play        | (F5)            | Launches debugger, also runs code until next breakpoint
@@ -107,6 +109,29 @@
 # | Stop        | (Shift + F5)    | Stops the debugger. 
 #
 # All of these functions have their various purposes but the ones you will
-# probably use the most is F5 and F11.  These are the main operations if you set
+# probably use the most are F5 and F11.  These are the main operations if you set
 # decent breakpoints in your code and will utlimately be what you use to
-# navigate your code. 
+# navigate your code quickly and efficiently.  
+# 
+
+#%%[markdown]
+
+### Debugger Functions
+#
+# Now that we've discovered navigation, lets go over some of the tools we have
+# at our disposal . In the image below you'll see the layout of a normal
+# debugging session.  Each of the main sections/tools are circled.
+#
+# ![debugger](./results/lecture_2/images/debug_funcs.png)
+#
+#
+
+#%%[markdown]
+# Our four main sections are:
+#
+# | Name | Function |
+# | :---: | :--- |
+# | Watch      | You can type in custom variables (and small functions) you want track!  Fun!|
+# | Variables  | Shows you all the variables at a global and local scope|
+# | Call Stack | Shows you how to back trace your function to where it was called|
+# | Breakpoints| Shows you the location of all the breakpoints in any file in your root dir|
