@@ -49,6 +49,8 @@ from rich import inspect
 # the virtual environment you've hopefully stored in the root of your folder.  
 # Otherwise you can paste in these parameters into a json file in your `.vscode`
 # folder in your root directory.  (Copy from the source py file for indentation)
+#
+#For detailed documentation on the debugger, check out [this link](https://code.visualstudio.com/docs/editor/debugging)
 #%%[markdown]
 #
 #     {	"version": "0.2.0",
@@ -139,6 +141,9 @@ from rich import inspect
 #
 
 #%%[markdown]
+#
+### VSCode Debugging Panels/Tabs
+#
 # Our four tabs / functions at our disposal are:
 #
 # | Name | Description |
@@ -178,7 +183,6 @@ from rich import inspect
 # thank yourself later when you're debug tracing and you only have to scan 3
 # lines of code vs. 3000
 # 
-# ![breakpoints](./results/lecture_2/images/breakpoints.png)
 
 
 #%%
@@ -237,9 +241,8 @@ print("I'm here to pause your code")
 
 [x for x in opendb.data.columns]
 im_gp = opendb.data.groupby(by="Country")
-swims = im_gp["Swim"].mean().sort_values()
+swims = im_gp["Run"].mean().sort_values()
 fullnames = list(zip(swims.index.map(opendb.target_dict), swims))
-maxl = max([len(name) for name in opendb.target_dict.values()])
 [name for name in fullnames]
 [f'{name[0]:_<18} Time:-> {support.convert_time_format(int(name[1]))}' for name in fullnames]
 
@@ -349,16 +352,16 @@ ax_one = fig.add_subplot(gs[:3, 0], label="stack_country")
 # ax_temp = fig.add_subplot(gs[2:3, 0], label="stack_country_temp")
 
 #Top right axis
-ax_two = fig.add_subplot(gs[0, 1], label="swim")
+ax_two = fig.add_subplot(gs[:1, 1], label="swim")
 
 #mid right axis
-ax_three = fig.add_subplot(gs[1, 1], label="bike")
+ax_three = fig.add_subplot(gs[1:2, 1], label="bike")
 
 #low right axis
-ax_four = fig.add_subplot(gs[2, 1], label="run")
+ax_four = fig.add_subplot(gs[2:, 1], label="run")
 
 #Can also adjust horizontal spacing of subplots at the global plt level with code below.
-# plt.subplots_adjust(hspace=0.5)
+plt.subplots_adjust(hspace=0.1)
 # 
 
 #%%[markdown]
@@ -703,7 +706,7 @@ for event_col, ax in zip(graphcols[:3], [ax_two, ax_three, ax_four]):
 plt.suptitle("2019 Ironman Kona Results", y=0.95, ha="center", va="center", size=30)
 plt.show()
 
-#%%[markdown]
+#%%
 
 # That is about it!  
 # Thank you all for coming and please ask me any questions.  
