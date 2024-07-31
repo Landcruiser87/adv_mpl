@@ -18,12 +18,12 @@ from rich import inspect
 # 
 # 
 # For our second talk regarding *matplotlib*, we'll dive into two very important
-# aspects of developing and testing code in general.  First will be the `native
-# debugger` that's built into your IDE.  We'll be specifically going over
-# VSCode's debugger although the methodology for other IDE's should be similar.
-# Then, we will dive into the ever confusing `GridSpec` object in matplotlib.
-# Which utilizing some of our knowledge from the last lecture, will make sense
-# in how the object defines its layouts for visualizations.  
+# aspects of developing super cool plots.  First will be the `native debugger`
+# that's built into your IDE.  We'll be specifically going over VSCode's
+# debugger although the methodology for other IDE's should be similar. Then, we
+# will dive into `GridSpec` object in matplotlib. Which utilizing some of our
+# knowledge from the last lecture, will make sense in how the object defines its
+# layouts for visualizations.  
 # 
 #
 # As an overview, our talk tonight will be sectioned into 3 main parts. 
@@ -49,43 +49,40 @@ from rich import inspect
 # the virtual environment you've hopefully stored in the root of your folder.  
 # Otherwise you can paste in these parameters into a json file in your `.vscode`
 # folder in your root directory.  (Copy from the source py file for indentation)
+#%%[markdown]
 #
-# {	"version": "0.2.0",
-# 	"configurations": [
-# 		{
-# 			"name": "Python: Current File",
-# 			"type": "python",
-# 			"request": "launch",
-# 			"program": "${file}",
-# 			"console": "integratedTerminal",
-# 			"python.formatting.provider": "black",
-# 			"python.linting.enabled": true,
-# 			"files.autoSave": "afterDelay",
-# 			"files.autoSaveDelay": 10000,
-# 			"python.linting.lintOnSave": true,
-# 			// "justMyCode": false,
-
-# 		}
-# 	]
-# }
+#     {	"version": "0.2.0",
+#     "configurations": [
+#         {"name": "Python: Current File",
+#          "type": "python",
+#          "request": "launch",
+#          "program": "${file}",
+#          "console": "integratedTerminal",
+#          "python.formatting.provider": "black",
+#          "python.linting.enabled": true,
+#          "files.autoSave": "afterDelay",
+#          "files.autoSaveDelay": 10000,
+#         }
+#     ]
+#     } 
 #
-
+#%%[markdown]
 # They really don't change much and you can put whatever file linters or type
 # checking devices in there to run whenever you launch the debugger.  
 # So! We've launched the debugger but now how do we stop it at a certain 
-# iine in our code???
+# line in our code???
 
 #%%[markdown]
 
 #### Breakpoints
 
-# These fun little whackadoodles look like little stop signs you can put to
-# the left of the line number in your code.  What these do is `stop the
-# code` when it reaches, you guessed it, that stop sign!  This is extremely
-# useful because once you've stopped code, you can inspect variables.
-# Investigate a bug, test code that may not be working yet, and so much more.
-# It is VERY useful in developing graphs because often the object methods you
-# want or difficult to track and / or use depending on how complex your graphing
+# These fun little whackadoodles look like little stop signs you can put to the
+# left of the line number in your code.  What these do is `stop the code` when
+# it reaches, you guessed it, that stop sign!  This is extremely useful because
+# once you've stopped code, you can inspect variables, trace errors. Investigate
+# a bug, test code that may not be working yet, and so much more. It is VERY
+# useful in developing graphs because often the object methods you want or
+# difficult to track and / or use depending on how complex your graphing
 # structure has grown.  
 #
 #
@@ -98,17 +95,18 @@ from rich import inspect
 #### Navigation and debugging utilities
 
 # Now that we've got the ability to stop our code at some point in the process, 
-# Next we need to figure out how to operate the debugger to perform certain actions
+# now we need to figure out how to operate the debugger to perform certain actions
 # when inspecting our code.  First off, The debugger tab can be located here.  
 #
 # ![debugger icon](./results/lecture_2/images/debugger_icon.png)
 #
-# So now that we've set breakpoints, we launch the debugger by hitting F5. 
-# This will run our code until it hits said breakpoint.  (If there weren't any
-# breakpoints set, the code would just run and shutdown if there weren't any
-# errors).  Once we hit that breakpoint, the program will pause and give you
-# these main tabs as well as a new navigation bar to run the debugger with your mouse.  
-# I prefer to run them with my keyboard. Here's what it all should look like after you hit a breakpoint
+# We've set breakpoints, we launch the debugger by hitting F5. This will launch
+# the debugger and run our code until it hits said breakpoint.  (If there
+# weren't any breakpoints set, the code would just run and shutdown if there
+# weren't any errors).  Once we hit that breakpoint, the program will pause and
+# give you these main tabs as well as a new navigation bar to run the debugger
+# with your mouse.  I prefer to run them with my keyboard. Here's what it all
+# should look like after you hit a breakpoint
 #
 # ![debugger](./results/lecture_2/images/debug_nav.png)
 #
@@ -159,12 +157,13 @@ from rich import inspect
 # entire program as it runs, (increasing overhead if you have too many) and
 # `local` variables are only available at the current function level. Which is
 # also good to know because it can sometimes be confusing to track which
-# variables are available to what part of the program.  The `call stack` and
-# `breakpoints` tabs you probably won't use as much.  But the breakpoints tab
-# can be useful sometimes to deselect certain breakpoints from stopping if you
-# don't want to keep going back to set and unset them each time with the stop
-# sign. To temporarily disable a breakpoint just uncheck the blue box and it
-# will just be an greyed out circle as opposed to a red circle. 
+# variables are available to what part of the program.  These you can trace with
+# the `call stack` tab and click your way back to where you started.  The `call
+# stack` and `breakpoints` tabs you probably won't use as much.  But the
+# breakpoints tab can be useful sometimes to deselect certain breakpoints from
+# stopping if you don't want to keep going back to set and unset them each time
+# with the stop sign. To temporarily disable a breakpoint just uncheck the blue
+# box and it will just be an greyed out circle as opposed to a red circle. 
 # 
 # Ok!  Now that we've established navigation and functions.  We can to begin to
 # inspect our variables at runtime.  Say I'm working on the `support.py` file
@@ -190,6 +189,7 @@ opendb = support.grab_dataset(43482)
 inspect(opendb)
 # Use dir to inspect object components
 dir(opendb)
+#Look at the object variables we created 
 list(dir(opendb))[-6:]
 
 #List out our available columns and types
@@ -237,7 +237,7 @@ print("I'm here to pause your code")
 
 [x for x in opendb.data.columns]
 im_gp = opendb.data.groupby(by="Country")
-swims = im_gp["Run"].mean().sort_values()
+swims = im_gp["Swim"].mean().sort_values()
 fullnames = list(zip(swims.index.map(opendb.target_dict), swims))
 maxl = max([len(name) for name in opendb.target_dict.values()])
 [name for name in fullnames]
@@ -256,7 +256,7 @@ maxl = max([len(name) for name in opendb.target_dict.values()])
 # Now you can start typing in functions and begin to inspect your objects at
 # runtime.  Here we're looking at the dataclass I've created with different types
 # of objects for different purposes within this analysis.  Trust me this is a
-# very powerful technique that everyone needs to know.  Because half the time
+# very powerful technique that will always be helpful.  Because half the time
 # your code breaks and you need a way to diagnose it.  This is the best way I've
 # found. There are other options you can explore with the library `pdb` (Which
 # ships with python)
@@ -265,16 +265,16 @@ maxl = max([len(name) for name in opendb.target_dict.values()])
 #
 # The premise of usage with this library is mostly the same, except instead of
 # using the IDE to configure breakpoints and set them.  You do it manually
-# within the code to stop and inspect various objects.  This is very useful if
-# say you're debugging code that's sitting up in a server that you may not be
-# able to connect your IDE too. So as always, its good to know all ways of how
-# to do things!  Alot of people still use this method! (Dr. Santerre included),
-# but I've found that VSCode's native debugger has more capabilities and
-# options that help me develop faster / write cleaner code.  So as with any new
-# tool that we may include in our stack.  Try both!  See which one suits your
-# coding style more and go forward with using it.  Being able to pause and
-# inspect your code is a vital skill, one that will help you understand whats
-# happening in your routines at all times. 
+# (writing code) within the code to stop and inspect various objects.  This is
+# very useful if say you're debugging code that's sitting up in a server that
+# you may not be able to connect your IDE too. So as always, its good to know
+# all ways of how to do things!  Alot of people still use this method! (Dr.
+# Santerre included), but I've found that VSCode's native debugger has more
+# capabilities and options that help me develop faster / write cleaner code.  So
+# as with any new tool that we may include in our stack.  Try both!  See which
+# one fits your coding style more and use it going forward.  Being able to
+# pause and inspect your code is a vital skill, one that will help you
+# understand whats happening in your routines at all times. 
 #
 #
 #%%[markdown]
@@ -297,16 +297,16 @@ maxl = max([len(name) for name in opendb.target_dict.values()])
 #
 # Think of the Gridspec object like a more refined way to label and access the
 # axis of what you want to graph.  Say for instance we wanted to take our
-# ironman data from above and create a graph of the top 20 teams total times on
-# the left in one column as a stacked bar chart. Then we could make smaller,
-# individual violin plots of the top countries for each individual sport of the
-# triathlon.  This would help us visualize and answer not only which countries
-# were fastest overall, but also which country's excel at which sport. We'll
-# also include the counts for each country in the x labels.  To create this
-# layout with the gridspec object, its as easy as selecting the right slices of
-# the graph that you want to create.  So to create this object, we'll use the
-# same inputs as we would for `plt.subplots`.  But call them into the gridspec
-# object. So our chart will be
+# ironman dataset and create a graph of the top 20 teams total times on the left
+# in one column as a stacked bar chart. Then we could make smaller, individual
+# violin plots of the top countries for each individual sport of the triathlon.
+# This would help us visualize and answer not only which countries were fastest
+# overall, but also which country's excel at which sport. We'll also include the
+# counts for each country in the x labels.  To create this layout with the
+# gridspec object, its as easy as selecting the right slices of the graph that
+# you want to create.  So to create this object, we'll use the same inputs as we
+# would for `plt.subplots`.  But call them into the gridspec object. So our
+# chart will be
 #
 # - nrows = 3
 # - ncols = 2
@@ -363,17 +363,18 @@ ax_four = fig.add_subplot(gs[2, 1], label="run")
 
 #%%[markdown]
 # Now that we've got our basic structure up.  We can begin to build each chart
-# because we have direct reference to each the axes objects underneath subplot.
-# So.  First we will start with stacked barchart on the left. To begin this
-# section, first we need to do a little house cleaning with the data. Due to
-# some countries having less participants than others.  Lets put a lower limit
-# on countries that have more than 10 people representing their country. That
-# way we can be somewhat confident we don't have any smaller countries with very
-# fast individuals that might sway the results.  We will also combine the two
-# transition times for a total transition time.  This is because when viewing
-# much longer times for each of the individual sports, you won't be able to see
-# either transition time beecause they are relatively much smaller than the
-# sport time.
+# because we have direct reference to each the axes objects underneath the
+# subplots. So.  First we will start with stacked barchart on the left. To begin
+# this section, first we need to do a little house cleaning with the data. Due
+# to some countries having less participants than others.  
+# 
+# Lets put a lower limit on countries that have more than 10 people representing
+# their country. That way we can be somewhat confident we don't have any smaller
+# countries with very fast individuals that might influence the results in their
+# favor.  We will also combine the two transition times for a total transition
+# time.  This is because when viewing much longer times for each of the
+# individual sports, you won't be able to see either transition time beecause
+# they are relatively much smaller than the sport time.
 # 
 #%%
 
@@ -395,10 +396,13 @@ ax_three = fig.add_subplot(gs[1, 1], label="bike")
 
 #low right axis
 ax_four = fig.add_subplot(gs[2, 1], label="run")
+
 #Copy the dataset and begin data cleaning
 ironman = opendb.data.copy()
 ironman["Transitions"] = ironman["T1"] + ironman["T2"]
 graphcols = ["Swim", "Bike", "Run", "Overall", "Transitions"]
+
+# Make an empty dataframe to fill
 iron_df = pd.DataFrame(
     data = np.zeros(shape=(len(opendb.target_dict),len(graphcols))),
     index = sorted(opendb.target_dict.keys()),
@@ -408,6 +412,9 @@ iron_df = pd.DataFrame(
 
 # Create means for each country over 10 participants
 # Set the minimim amount of records we need for an average
+# Have to manually calculate averages because groupby was being a PITA if some
+# countries have null values.
+
 min_records = 10
 for col in graphcols:
     for country in iron_df.index:
@@ -699,3 +706,6 @@ plt.show()
 #%%[markdown]
 
 # That is about it!  
+# Thank you all for coming and please ask me any questions.  
+#
+# ![Thank you!](https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExZnpra3phNXBybmM2N2JqOXBoM2Q1MGo3ODhzaW9wY3g3YTgxZmtrcCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Jk4Sucdz1oGd2/giphy.gif)
