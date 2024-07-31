@@ -85,8 +85,9 @@ from rich import inspect
 # a bug, test code that may not be working yet, and so much more. It is VERY
 # useful in developing graphs because often the object methods you want or
 # difficult to track and / or use depending on how complex your graphing
-# structure has grown.  
-#
+# structure has grown.  One quick note, if you're debugging a graph you're
+# building.  `Make sure you input a breakpoint before the figure is created`
+# If you stop after that, the graph won't render. 
 #
 # ![breakpoints](./results/lecture_2/images/breakpoints.png)
 #
